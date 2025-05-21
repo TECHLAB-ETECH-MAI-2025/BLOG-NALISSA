@@ -9,6 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CategoryType extends AbstractType
 {
+     /**
+     * Définit les champs du formulaire Categorie
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -16,7 +19,9 @@ class CategoryType extends AbstractType
             ->add('description')
         ;
     }
-
+/**
+     * Configure la classe liée aux données du formulaire
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
