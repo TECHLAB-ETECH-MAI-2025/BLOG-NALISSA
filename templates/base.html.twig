@@ -1,54 +1,263 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-       <link rel="stylesheet" href="{{ asset('styles/bootstrap.min.css') }}">
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Blog Nalissa - Le blog tech pro{% endblock %}</title>
 
-       
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+    <link rel="stylesheet" href="{{ asset('styles/bootstrap.min.css') }}" />
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Blog Nalissa</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarColor02">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/blog">Articles
-                                <span class="visually-hidden">(current)</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path('blog_create')}}">Crée un Articles</a>
-                        </li>
-                        
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Separated link</a>
-                            </div>
-                        </li>
-                    </ul>
-               
-                </div>
-            </div>
-        </nav>
-        <div class="container">
-           {% block body %}{% endblock %}
+    <style>
+        /* Thème clair amélioré */
+        body {
+            background-color: #F0F4F8;
+            color: #1A202C;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: #3182CE;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover, a:focus {
+            color: #63B3ED;
+            text-decoration: underline;
+        }
+
+        .navbar {
+            background-color: #fff !important;
+            border-bottom: 2px solid #CBD5E0;
+            box-shadow: 0 2px 6px rgb(0 0 0 / 0.05);
+            transition: background-color 0.3s, border-color 0.3s;
+            font-weight: 600;
+        }
+        .navbar-brand {
+            color: #3182CE !important;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .nav-link {
+            color: #1A202C !important;
+            font-weight: 500;
+            margin-right: 1rem;
+            transition: color 0.3s;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #63B3ED !important;
+        }
+
+        #darkModeToggle {
+            cursor: pointer;
+            border: none;
+            background: #3182CE;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        #darkModeToggle:hover {
+            background-color: #63B3ED;
+        }
+
+        /* Container principal pour le contenu */
+        .container {
+            flex: 1 0 auto;
+            padding: 2rem 1rem 3rem;
+            max-width: 960px;
+        }
+
+        /* Zone d’accueil */
+        .hero {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            color: #3182CE;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 1.8rem;
+            color: #4A5568;
+        }
+        .btn-primary {
+            background-color: #3182CE;
+            border-color: #3182CE;
+            color: white;
+            padding: 0.7rem 1.4rem;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgb(49 130 206 / 0.3);
+            transition: background-color 0.3s, border-color 0.3s;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background-color: #63B3ED;
+            border-color: #63B3ED;
+            color: white;
+            box-shadow: 0 6px 14px rgb(99 179 237 / 0.45);
+            text-decoration: none;
+        }
+
+        /* Article cards (exemple structure, à utiliser dans block body) */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+            transition: box-shadow 0.3s;
+        }
+        .card:hover {
+            box-shadow: 0 6px 16px rgb(0 0 0 / 0.15);
+        }
+        .card-body {
+            padding: 1.6rem 1.8rem;
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            color: #2C5282;
+        }
+        .card-text {
+            color: #4A5568;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .card-link {
+            font-weight: 600;
+            color: #3182CE;
+            text-decoration: none;
+        }
+        .card-link:hover {
+            color: #63B3ED;
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            flex-shrink: 0;
+            background-color: #EDF2F7;
+            border-top: 1px solid #CBD5E0;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 4rem;
+            user-select: none;
+        }
+        footer a {
+            color: #3182CE;
+            margin: 0 8px;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #63B3ED;
+            text-decoration: underline;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .btn-primary {
+                font-size: 1rem;
+                padding: 0.6rem 1rem;
+            }
+            .nav-link {
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📝</text></svg>">
+
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const toggle = document.getElementById('darkModeToggle');
+                const body = document.body;
+
+                if(localStorage.getItem('darkMode') === 'enabled'){
+                    body.classList.add('dark-mode');
+                }
+
+                toggle.addEventListener('click', () => {
+                    body.classList.toggle('dark-mode');
+                    if(body.classList.contains('dark-mode')){
+                        localStorage.setItem('darkMode', 'enabled');
+                    } else {
+                        localStorage.setItem('darkMode', 'disabled');
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ path('home') }}">Blog Nalissa</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ path('home') }}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('blog') }}">Articles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('blog_create') }}">Créer un article</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('category_index') }}">Catégories</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('category_new') }}">Nouvelle catégorie</a>
+                </li>
+
+                <li class="nav-item ms-3">
+                    <button id="darkModeToggle" aria-label="Basculer mode clair/sombre" title="Basculer mode clair/sombre">
+                        🌓
+                    </button>
+                </li>
+            </ul>
         </div>
-    </body>
+    </div>
+</nav>
+
+
+
+    {% block body %}
+    {# Ici tu pourras injecter les articles, formulaires, etc. #}
+    {% endblock %}
+</div>
+
+<footer>
+    &copy; 2025 Blog Nalissa | <a href="mailto:nhalyelantomalala@gmail.com">nhalyelantomalala@gmail.com</a> |
+   
+</footer>
+</body>
 </html>
