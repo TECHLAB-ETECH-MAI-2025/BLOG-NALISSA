@@ -39,7 +39,7 @@ class Article
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Category $Catogory = null;
+    private ?Category $Category = null;
 
     /**
      * @var Collection<int, Comment>
@@ -105,14 +105,14 @@ class Article
         return $this;
     }
 
-    public function getCatogory(): ?Category
+    public function getCategory(): ?Category
     {
-        return $this->Catogory;
+        return $this->Category;
     }
 
-    public function setCatogory(?Category $Catogory): static
+    public function setCategory(?Category $Category): static
     {
-        $this->Catogory = $Catogory;
+        $this->Category = $Category;
 
         return $this;
     }

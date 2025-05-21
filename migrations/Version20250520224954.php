@@ -24,13 +24,13 @@ final class Version20250520224954 extends AbstractMigration
             CREATE TABLE category (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, description VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE article ADD catogory_id INT NOT NULL
+            ALTER TABLE article ADD category_id INT NOT NULL
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE article ADD CONSTRAINT FK_23A0E668386812A FOREIGN KEY (catogory_id) REFERENCES category (id)
+            ALTER TABLE article ADD CONSTRAINT FK_23A0E668386812A FOREIGN KEY (category_id) REFERENCES category (id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_23A0E668386812A ON article (catogory_id)
+            CREATE INDEX IDX_23A0E668386812A ON article (category_id)
         SQL);
     }
 
@@ -47,7 +47,7 @@ final class Version20250520224954 extends AbstractMigration
             DROP INDEX IDX_23A0E668386812A ON article
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE article DROP catogory_id
+            ALTER TABLE article DROP category_id
         SQL);
     }
 }

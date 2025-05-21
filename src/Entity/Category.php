@@ -73,7 +73,7 @@ class Category
     {
         if (!$this->articles->contains($article)) {
             $this->articles->add($article);
-            $article->setCatogory($this);
+            $article->setCategory($this);
         }
 
         return $this;
@@ -83,8 +83,8 @@ class Category
     {
         if ($this->articles->removeElement($article)) {
             // set the owning side to null (unless already changed)
-            if ($article->getCatogory() === $this) {
-                $article->setCatogory(null);
+            if ($article->getCategory() === $this) {
+                $article->setCategory(null);
             }
         }
 
