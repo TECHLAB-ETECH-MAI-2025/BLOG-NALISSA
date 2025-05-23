@@ -33,7 +33,6 @@ final class CommentController extends AbstractController
         ]);
     }
 
-    #[Route('/new/{articleId}', name: 'app_comment_new')]
     #[Route('/{id}/edit', name: 'app_comment_edit')]
     public function create(?Comment $comment = null, Request $request, EntityManagerInterface $manager): Response
     {

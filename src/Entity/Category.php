@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Article;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
@@ -24,8 +25,8 @@ class Category
     /**
      * @var Collection<int, Article>
      */
-    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'Category')]
-    private Collection $articles;
+    #[ORM\OneToMany(mappedBy: 'category' , targetEntity: Article::class )]
+    private Collection $articles;   
 
     public function __construct()
     {
@@ -45,7 +46,6 @@ class Category
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -57,7 +57,6 @@ class Category
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -69,25 +68,28 @@ class Category
         return $this->articles;
     }
 
-    public function addArticle(Article $article): static
+     public function addArticle(Article $article): self
     {
         if (!$this->articles->contains($article)) {
-            $this->articles->add($article);
+            $this->articles[] = $article;
             $article->setCategory($this);
         }
 
         return $this;
     }
-
-    public function removeArticle(Article $article): static
+     public function removeArticle(Article $article): self
     {
         if ($this->articles->removeElement($article)) {
-            // set the owning side to null (unless already changed)
             if ($article->getCategory() === $this) {
                 $article->setCategory(null);
             }
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->title ?? '';
     }
 }

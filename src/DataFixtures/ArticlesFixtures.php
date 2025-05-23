@@ -8,13 +8,15 @@ use App\Entity\Article;
 use App\Entity\Category;
 use App\Entity\Comment;
 use Faker\Factory;
+use Faker\Provider\fr_FR\Address;
 
 class ArticlesFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
         // Initialise Faker en français
-        $faker = Factory::create('FR_fr');
+        $faker = Factory::create('fr_FR');
+        $faker->addProvider(new Address($faker));
 
         // Crée 3 catégories fictives
         for($j = 1; $j <= 3; $j++) {
@@ -37,7 +39,7 @@ class ArticlesFixtures extends Fixture
                 $article->setTitle($faker->sentence())
                         ->setContent($content)
                         ->setImage('https://picsum.photos/350/150')
-                        ->setCreatedAt($faker->dateTimeBetween('-6 months'))
+                        ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-6 months')))
                         ->setCategory($category);
 
                 // Enregistre l'article

@@ -5,6 +5,10 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\Category;
+use \DateTime;
+use \DateTimeImmutable;
+
+
 use App\Form\ArticleType;
 use App\Form\CommentType;
 use App\Repository\ArticleRepository;
@@ -27,7 +31,7 @@ final class BlogController extends AbstractController
                       ->orderBy('a.createdAt', 'DESC')
                       ->getQuery();
 
-        // Applique la pagination (5 articles par page)
+        // la pagination (5 articles par page)
         $articles = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
@@ -67,7 +71,7 @@ final class BlogController extends AbstractController
 
             // Ajoute la date de création si c'est un nouvel article
             if (!$article->getId()) {
-                $article->setCreatedAt(new \DateTime());
+                $article->setCreatedAt(new DateTimeImmutable());
             }
 
             // Enregistre l'article
@@ -86,7 +90,7 @@ final class BlogController extends AbstractController
     }
 
     // Route pour afficher un article et ses commentaires
-    #[Route('/blog/{id}', name: 'blog_show', methods: ['GET'])]
+    #[Route('/blog/{id}', name: 'blog_show', methods: ['GET', 'POST'])]
     public function show(Article $article, Request $request, EntityManagerInterface $manager): Response
     {
         // Prépare un nouveau commentaire
@@ -96,8 +100,8 @@ final class BlogController extends AbstractController
         
         // Si le formulaire est soumis et valide
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment->setCreatedAt(new \DateTime());
-            $comment->setArticle($article);
+            $comment->setCreatedAt(new DateTime())
+                    ->setArticle($article);
 
             // Enregistre le commentaire
             $manager->persist($comment);
