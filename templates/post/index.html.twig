@@ -1,0 +1,11 @@
+<h1>Liste des posts</h1>
+
+<ul>
+    {% for post in posts %}
+        <li>
+            <strong>{{ post.title }}</strong><br>
+            {{ post.body }}
+        </li>
+    {% endfor %}
+</ul>
+    
