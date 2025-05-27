@@ -147,6 +147,10 @@
                 {{ form_end(formComment) }}
             {% else %}
 
+            <button class="like-btn" data-url="{{ path('article_like', { id: article.id }) }}">
+               ❤️ <span class="like-count">{{ article.likes }}</span>
+            </button>
+            <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
             
             <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
 

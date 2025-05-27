@@ -257,6 +257,9 @@
      {{ encore_entry_link_tags('app') }}
     {% endblock %}
 
+    {% block stylesheets %}
+     {{ encore_entry_link_tags('styles') }}
+    {% endblock %}
 </head>
 <body>
 <nav class="navbar navbar-expand-lg sticky-top">
@@ -312,7 +315,6 @@
 
 <main class="container" role="main">
     {% block body %}
-    {# Injecter les articles, formulaires, etc #}
     {% endblock %}
 </main>
 
