@@ -5,7 +5,7 @@
 <div class="container mt-5" style="max-width: 800px;">
 
     <!-- Titre dynamique -->
-    <h1 class="mb-4 text-center text-primary">
+    <h1 class="mb-4 text-center text-theme">
         {% if editMode %}
             Modifier l'article
         {% else %}
@@ -15,8 +15,8 @@
 
     <!-- Bouton retour -->
     <div class="mb-4 text-end">
-        <a href="{{ path('blog') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left-circle"></i> Retour à la liste
+        <a href="{{ path('articles_list') }}" class="btn btn-theme">
+            <i class="bi bi-arrow-left-circle"></i>← Retour à la liste
         </a>
     </div>
 
@@ -54,11 +54,11 @@
 
             <!-- Bouton de soumission -->
             <div class="text-end">
-                <button class="btn btn-success">
+                <button class="btn btn-theme">
                     {% if editMode %}
-                        <i class="bi bi-save"></i> Enregistrer les modifications
+                        <i class="bi bi-save fa-solid fa-save"></i> Enregistrer les modifications
                     {% else %}
-                        <i class="bi bi-plus-circle"></i> Ajouter l'article
+                        <i class="bi bi-plus-circle"></i>+ Ajouter l'article
                     {% endif %}
                 </button>
             </div>

@@ -7,6 +7,8 @@
 
     <!-- Bootstrap 5 CSS via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 
     <style>
         body {
@@ -246,7 +248,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📝</text></svg>">
 
     {% block stylesheets %}
-     {{ encore_entry_link_tags('styles') }}
+     {{ encore_entry_link_tags('app') }}
     {% endblock %}
 </head>
 <body>
@@ -264,17 +266,15 @@
                     <a class="nav-link {% if app.request.get('_route') == 'home' %}active{% endif %}" href="{{ path('home') }}">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') starts with 'blog' %}active{% endif %}" href="{{ path('blog') }}">Articles</a>
+                    <a class="nav-link {% if app.request.get('_route') starts with 'blog' %}active{% endif %}" href="{{ path('blog') }}">Blog</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') == 'blog_create' %}active{% endif %}" href="{{ path('blog_create') }}">Créer un article</a>
+                    <a class="nav-link {% if app.request.get('_route') == 'blog_create' %}active{% endif %}" href="{{ path('articles_list') }}">Articles</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if app.request.get('_route') starts with 'category' %}active{% endif %}" href="{{ path('category_index') }}">Catégories</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') == 'category_new' %}active{% endif %}" href="{{ path('category_new') }}">Nouvelle catégorie</a>
-                </li>
+               
                 {% if not app.user%}
                     <li class="nav-item ms-3">
                         <a class="btn btn-outline-primary btn-sm" href="{{ path('security_login') }}">Connexion</a>

@@ -5,10 +5,10 @@
 {% block body %}
 <div class="my-5 d-flex justify-content-center">
     <div style="max-width: 800px; width: 100%; padding: 0 15px;">
-        <h1>Category</h1>
+        <h1 class="text-theme">Category</h1>
             <div class="mb-4 d-flex justify-content-end">
-            <a href="{{ path('category_new') }}" class="btn btn-success">
-                <i class="bi bi-plus-lg"></i> Ajouter un Categorie
+            <a href="{{ path('category_new') }}" class="btn btn-theme">
+                <i class="bi bi-plus-lg"></i>+ Ajouter un Categorie
             </a>
         </div>
 
@@ -29,7 +29,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('category_index') }}" class="btn btn-outline-primary">← Retour aux categories</a>
+    <a href="{{ path('category_index') }}" class="btn btn-theme">← Retour aux categories</a>
 
     <a href="{{ path('category_edit', {'id': category.id}) }}" class="btn btn-warning me-2">Modifier</a>
     <form action="{{ path('category_delete', {id: category.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer cet categorie ?');">
