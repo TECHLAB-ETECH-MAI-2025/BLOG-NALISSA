@@ -1,39 +1,46 @@
 {% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+  
+     {{ encore_entry_link_tags('app') }}
+
+    
+{% endblock %}
+
 {% block body %}
-<h1>Liste des articles (avec DataTables)</h1>
-<table id="articlesTable" class="display">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Titre</th>
-            <th>Contenu</th>
-            <th>Date de création</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-</table>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<!-- <script>
+<div class="container my-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-theme">Liste des articles</h1>
+         <a href="{{ path('blog_create') }}" class="btn btn-theme">
+                <i class="bi bi-plus-lg"></i>+ Ajouter un article
+            </a>
+    </div>
+    
+    <table id="articlesTable" class="table table-striped table-hover table-bordered">
+        <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Titre</th>
+                <th>Contenu</th>
+                <th>Date de création</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {# Exemple statique ou via JS avec DataTables #}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
 
-$(function () {
-    console.log("Initialisation de DataTables...");
-    $('#articlesTable').DataTable({
-        ajax: "{{ path('api_articles') }}",
-        columns: [
-            { data: 'id' },
-            { data: 'title' },
-            { data: 'content' },
-            { data: 'createdAt' },
-             { data: 'action' }
-        ],
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
-        },
-        responsive: true
-    });
-});
+{% block javascripts %}
+    {{ parent() }}
 
-</script> -->
+   
+
+    {{ encore_entry_script_tags('datatables') }}
+
+   
 {% endblock %}
