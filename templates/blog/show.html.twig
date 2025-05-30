@@ -98,7 +98,6 @@
                             <p class="mb-0" style="white-space: pre-wrap; line-height: 1.5;">{{ comment.content|raw }}</p>
                              <a href="" class="btn btn-sm btn-primary">
                                 <i class="fa-regular fa-thumbs-up"></i> (0)
-
                              </a>
                              <a href=""class="btn btn-sm btn-primary"> 
                                 <i class="fa-solid fa-reply"></i> 
@@ -107,35 +106,24 @@
                     </div>
                 {% endfor %}
             {% endif %}
-            {% if app.user %}
-           <h4 class="mt-5">Laisser un commentaire</h4>
-                    {{ form_start(formComment, {
-                                    
-                                'method': 'POST',
-                               
-                            }
-                        )
-                    }}
-                    <div class="mb-3">
-                        {{ form_row(formComment.author, { 'attr': {'class': 'form-control', 'placeholder': 'Votre nom'} }) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_row(formComment.content, { 'attr': {'class': 'form-control',  'placeholder': 'Votre commentaire'}  }) }}
-                    </div>
-                    <div class="text-end">
-                    <button  type="submit" class="btn btn-success">
-                                <i class="bi bi-plus-circle"></i> Ajouter 
-                    </button>
-                    </div>
-
-                {{ form_end(formComment) }}
-            {% else %}
-
+        {% if app.user %}
+            {{ form_start(formComment, {'method': 'POST'}) }}
+            <div class="mb-3">
+                {{ form_row(formComment.author, { 'attr': {'class': 'form-control', 'placeholder': 'Votre nom'} }) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(formComment.content, { 'attr': {'class': 'form-control',  'placeholder': 'Votre commentaire'}  }) }}
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Ajouter 
+                </button>
+            </div>
+            {{ form_end(formComment) }}
+        {% else %}
             <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
-            
             <a class="btn btn-outline-primary btn-sm" href="{{ path('security_login') }}">Connexion</a>
-            {% endif %}
-                 
+        {% endif %}
 </section>
     </div>
 </div>
