@@ -14,63 +14,42 @@ class ArticlesFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // Initialise Faker en français
         $faker = Factory::create('fr_FR');
         $faker->addProvider(new Address($faker));
 
-        // Crée 3 catégories fictives
-        for($j = 1; $j <= 3; $j++) {
-
+        // 3 catégories
+        for ($j = 1; $j <= 3; $j++) {
             $category = new Category();
             $category->setTitle($faker->sentence())
-                     ->setDescription($faker->paragraph());
+                     ->setDescription('<p>' . $faker->paragraph() . '</p>'); // un seul paragraphe
+            $manager->persist($category);
 
-            // Enregistre la catégorie
-            $manager->persist($category);     
-
-            // Crée entre 4 et 6 articles par catégorie
-            for($i = 1; $i <= mt_rand(4, 6); $i++) {
-
+            // 4 à 6 articles
+            for ($i = 1; $i <= mt_rand(4, 6); $i++) {
                 $article = new Article();
-
-                // Construit un contenu HTML simulé
-                $content = '<p>' . implode('</p><p>', $faker->paragraphs(5)) . '</p>';
-
                 $article->setTitle($faker->sentence())
-                        ->setContent($content)
+                        ->setContent('<p>' . $faker->paragraph() . '</p>') // un seul paragraphe
                         ->setImage('https://picsum.photos/350/150')
                         ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-6 months')))
                         ->setCategory($category);
-
-                // Enregistre l'article
                 $manager->persist($article);
 
-                // Crée entre 4 et 10 commentaires par article
-                for($k = 1; $k <= mt_rand(4, 10); $k++) {
-
-                    $comment = new Comment(); 
-
-                    // Contenu simulé pour le commentaire
-                    $content = '<p>' . implode('</p><p>', $faker->paragraphs(5)) . '</p>';
-
-                    // Calcule la date minimale autorisée pour le commentaire
+                // 4 à 10 commentaires
+                for ($k = 1; $k <= mt_rand(4, 10); $k++) {
+                    $comment = new Comment();
                     $now = new \DateTime();
                     $interval = $now->diff($article->getCreatedAt());
-                    $days = $interval->days;
-                    $minimum = '-' . $days . ' days';
+                    $minimum = '-' . $interval->days . ' days';
 
                     $comment->setAuthor($faker->name)
-                            ->setContent($content)
+                            ->setContent('<p>' . $faker->paragraph() . '</p>') // un seul paragraphe
                             ->setCreatedAt($faker->dateTimeBetween($minimum))
                             ->setArticle($article);
-
-                    // Enregistre le commentaire
                     $manager->persist($comment);
                 }
             }
         }
 
-        // Exécute toutes les insertions en base
         $manager->flush();
     }
 }

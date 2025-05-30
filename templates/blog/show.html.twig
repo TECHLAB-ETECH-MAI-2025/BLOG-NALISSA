@@ -6,7 +6,7 @@
 
 
         <div class="mb-4 d-flex justify-content-end">
-            <a href="{{ path('blog_create') }}" class="btn btn-success">
+            <a href="{{ path('blog_create') }}" class="btn btn-theme">
                 <i class="bi bi-plus-lg"></i>+ Ajouter un article
             </a>
         </div>
@@ -31,22 +31,37 @@
                 <hr>
 
                 <div class="d-flex justify-content-between align-items-center mt-4">
-                    <a href="{{ path('blog') }}" class="btn btn-outline-primary">← Retour aux articles</a>
+                    <a href="{{ path('articles_list') }}" class="btn btn-theme">← Retour aux articles</a>
 
                     <div  style="padding: 1rem 1.25rem;">
-                        <!-- Bouton Modifier -->
-                        <a href="" class="btn btn-sm btn-primary"> J'aime(0)</a>
-                        <a href="" class="btn btn-sm btn-success">Commenter</a>
-                         <a href="{{ path('blog_edit', {'id': article.id}) }}" class="btn btn-sm btn-primary">
-                            Modifier
-                        </a> 
+                                                <!-- J'aime -->
+                            <a href="" class="btn btn-sm btn-theme">
+                                <i class="fa-regular fa-thumbs-up"></i> (0)
+                            </a>
 
-                        <!-- Bouton Supprimer -->
-                         <form action="{{ path('blog_delete', {id: article.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cet article ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete-article' ~ article.id) }}">
-                            <button class="btn btn-sm btn-danger">Supprimer</button>
-                        </form>
-                        <a href="" class="btn btn-sm btn-warning">Partager</a>
+                            <!-- Commenter -->
+                            <a href="" class="btn btn-sm btn-success">
+                                <i class="fa-regular fa-comment"></i>
+                            </a>
+
+                            <!-- Modifier -->
+                            <a href="{{ path('blog_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+
+                            <!-- Supprimer -->
+                            <form action="{{ path('blog_delete', {id: article.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cet article ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-article' ~ article.id) }}">
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+
+                            <!-- Partager -->
+                            <a href="" class="btn btn-sm btn-warning">
+                                <i class="fa-solid fa-share-nodes"></i>
+                            </a>
+
 
                     </div>
                 </div>
@@ -68,16 +83,26 @@
                                 
                                  <form action="{{ path('app_comment_delete', {id: comment.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
                                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
-                                     <button class="btn btn-sm btn-danger">Supprimer</button>
+                                     <button class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
                                     </form>
-                                <a href="{{ path('app_comment_edit', {'id': comment.id}) }} " class="btn btn-sm btn-primary">Modifier</a>
-                                 <a href="" class="btn btn-sm btn-warning">Signaler</a>
+                                <a href="{{ path('app_comment_edit', {'id': comment.id}) }} " class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+
+                                </a>
+                                 <a href="" class="btn btn-sm btn-warning">
+                                    <i class="fa-solid fa-flag"></i>
+                                 </a>
                                 
                                 <small class="text-muted">{{ comment.createdAt|date('d/m/Y à H:i') }}</small>
                             </div>
                             <p class="mb-0" style="white-space: pre-wrap; line-height: 1.5;">{{ comment.content|raw }}</p>
-                             <a href="" class="btn btn-sm btn-primary"> <span>J'aime(0)</span></a>
-                             <a href=""class="btn btn-sm btn-primary">Répondre</a>
+                             <a href="" class="btn btn-sm btn-primary">
+                                <i class="fa-regular fa-thumbs-up"></i> (0)
+
+                             </a>
+                             <a href=""class="btn btn-sm btn-primary"> 
+                                <i class="fa-solid fa-reply"></i> 
+                            </a>
                         </div>
                     </div>
                 {% endfor %}
@@ -105,6 +130,7 @@
 
                 {{ form_end(formComment) }}
             {% else %}
+
             <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
             
             <a class="btn btn-outline-primary btn-sm" href="{{ path('security_login') }}">Connexion</a>

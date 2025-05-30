@@ -69,3 +69,59 @@
 			}
 		}
 	}
+
+	
+        /* Personnalisation du thème */
+        :root {
+            --bs-primary: #3182CE; /* Couleur principale */
+        }
+        h1 {
+            color: var(--bs-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Boutons d'action */
+        .btn-theme {
+            background-color: var(--bs-primary);
+            color: white;
+            border: none;
+        }
+        .btn-theme:hover, .btn-theme:focus {
+            background-color: #2768b2; /* un peu plus foncé au survol */
+            color: white;
+        }
+
+        /* Table */
+        table.dataTable {
+            border-collapse: separate !important;
+            border-spacing: 0 0.75rem;
+        }
+
+        /* Ligne de table arrondie */
+        table.dataTable tbody tr {
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgb(49 130 206 / 0.15);
+        }
+
+        /* Padding et centrage des colonnes */
+        table.dataTable th, table.dataTable td {
+            vertical-align: middle;
+            padding: 0.75rem 1rem;
+        }
+    // assets/styles/app.scss
+
+body {
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+.btn-theme {
+  background-color: #3182CE;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #2563eb;
+  }
+}

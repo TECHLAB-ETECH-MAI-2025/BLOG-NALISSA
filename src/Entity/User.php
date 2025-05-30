@@ -4,36 +4,36 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity( fields:"email",  message:"l'imail que vous avez indiqué est déjà utilisé !")]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[ORM\Id]
-
     private ?int $id = null;
 
-
-    #[ORM\Column(length: 255)]
-    #[Assert\Email()]
+    #[ORM\Column(length: 180)]
     private ?string $email = null;
+
+    /**
+     * @var list<string> The user roles
+     */
+    #[ORM\Column]
+    private array $roles = [];
+
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
+    private ?string $password = null;
+    public ?string $confirm_password = null;
 
     #[ORM\Column(length: 255)]
     private ?string $username = null;
-
-    #[ORM\Column(length: 255)]
-    #[Assert\Length(min: "8", minMessage:"Votre mot de pass doit faire minimumm 8 caractères!" )]
-    private ?string $password = null;
-
-    #[Assert\EqualTo(propertyPath:"password",  message:"Rétapez la même mot de passe")]
-
-    public $confirm_password;
 
     public function getId(): ?int
     {
@@ -52,18 +52,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUsername(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
     {
-        return $this->username;
+        return (string) $this->email;
     }
 
-    public function setUsername(string $username): static
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
     {
-        $this->username = $username;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    /**
+     * @param list<string> $roles
+     */
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
 
         return $this;
     }
 
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -75,19 +98,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    public function eraseCredentials(): void{
 
-    }
-    public function getSalt(){
-
-    }
-    public function getRoles(): array{
-     
-        return ['ROLE_USER'];
-    }
-       public function getUserIdentifier(): string
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
     {
-        return $this->email ?? '';
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
+
+        return $this;
+    }
 }
