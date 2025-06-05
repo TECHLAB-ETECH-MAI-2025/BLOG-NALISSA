@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ user.id ? "Modifier l'utilisateur" : "Nouvel utilisateur" }}
+{% endblock %}
+{% block stylesheets %}
+    <style>
+        .admin-container h1, .admin-container h3 {
+            color: #3182CE;
+        }
+            .admin-menu ul {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+
+    .admin-menu a {
+        text-decoration: none;
+        font-weight: bold;
+        color: #2B6CB0;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .admin-menu a:hover {
+        background-color: #ebf8ff;
+    }
+    </style>
+{% endblock %}
+
+
+
+{% block body %}
+<section class="admin-container container my-5">
+
+    <h1 >Menu d'administration</h1>
+
+    <nav class="admin-menu">
+            <ul>
+                <li><a href="{{ path('admin_dashboard') }}">Tableau de bord</a></li>
+                <li><a href="{{ path('admin_users') }}">Gestion des utilisateurs</a></li>
+                <li><a href="{{ path('app_home') }}">Retour au site</a></li>
+            </ul>
+        </nav>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="card shadow-sm rounded">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">{{ user.id ? " Modifier l'utilisateur" : "➕ Nouvel utilisateur" }}</h2>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.firstName) }}
+                        {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.firstName) }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.lastName) }}
+                        {{ form_widget(form.lastName, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.lastName) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.email) }}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.email) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.plainPassword) }}
+                    {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.plainPassword) }}
+
+                    <small class="form-text text-muted">
+                        {% if not user.id %}
+                            🔐 Le mot de passe doit contenir au moins 8 caractères.
+                        {% else %}
+                            🔒 Laissez vide pour conserver le mot de passe actuel.
+                        {% endif %}
+                    </small>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.roles) }}
+                    {{ form_widget(form.roles, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.roles) }}
+                </div>
+
+                <div class="form-check mb-3">
+                    {{ form_widget(form.isVerified, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(form.isVerified, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                    {{ form_errors(form.isVerified) }}
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('admin_users') }}" class="btn btn-outline-secondary">↩ Retour à la liste</a>
+                    <button type="submit" class="btn btn-success">
+                        {{ user.id ? '💾 Mettre à jour' : '✅ Créer' }}
+                    </button>
+                </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+</section>
+{% endblock %}
