@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="{% block meta_description %}Blog tech, conseils, tutoriels et projets open source{% endblock %}">
+
     <title>{% block title %}Blog Nalissa - Le blog tech pro{% endblock %}</title>
 
     <!-- Bootstrap 5 CSS via CDN -->
@@ -25,6 +27,7 @@
         a {
             color: #3182CE;
             text-decoration: none;
+            list-style: none;
             transition: color 0.3s;
         }
         a:hover, a:focus {
@@ -248,8 +251,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📝</text></svg>">
 
 
-    {% block stylesheets %}{% endblock %}
-    {{ encore_entry_link_tags('app') }}
+   
 
     {% block stylesheets %}
      {{ encore_entry_link_tags('app') }}
@@ -268,7 +270,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') == 'home' %}active{% endif %}" href="{{ path('home') }}">Accueil</a>
+                            <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if app.request.get('_route') starts with 'blog' %}active{% endif %}" href="{{ path('blog') }}">Blog</a>
@@ -288,6 +290,17 @@
                     <li class="nav-item ms-3">
                         <a class="btn btn-outline-primary btn-sm" href="{{ path('logout') }}">Deconnexion</a>
                     </li>
+                    <li class="nav-item ms-3">
+                        <a class="btn btn-outline-primary btn-sm" href="{{ path('app_profile') }}">Mon profile</a>
+                    </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item ms-3">
+                        <a href="{{ path('app_admin') }}" class="btn btn-warning btn-lg btn-sm">
+                            <i class="bi bi-shield-lock"></i> Administration
+                        </a>
+                    </li>
+                   {% endif %}
+
                 {% endif%}
                 <li class="nav-item ms-3 d-flex align-items-center">
                     <button id="darkModeToggle" aria-label="Basculer en mode sombre" title="Basculer en mode sombre">🌙</button>
