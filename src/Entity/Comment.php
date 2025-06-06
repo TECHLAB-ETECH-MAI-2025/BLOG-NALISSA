@@ -14,8 +14,9 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $author = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
@@ -37,7 +38,7 @@ class Comment
         return $this->author;
     }
 
-    public function setAuthor(string $author): static
+    public function setAuthor(?User $author): static
     {
         $this->author = $author;
 

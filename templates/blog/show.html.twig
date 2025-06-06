@@ -6,6 +6,7 @@
 
 
         <div class="mb-4 d-flex justify-content-end">
+            
             <a href="{{ path('blog_create') }}" class="btn btn-theme">
                 <i class="bi bi-plus-lg"></i>+ Ajouter un article
             </a>
@@ -44,18 +45,21 @@
                                 <i class="fa-regular fa-comment"></i>
                             </a>
 
+                            {% if is_granted('ROLE_ADMIN') %}
                             <!-- Modifier -->
                             <a href="{{ path('blog_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
 
                             <!-- Supprimer -->
-                            <form action="{{ path('blog_delete', {id: article.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cet article ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete-article' ~ article.id) }}">
-                                <button class="btn btn-sm btn-danger">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </form>
+
+                             <form action="{{ path('blog_delete', {id: article.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cet article ?');">
+                                 <input type="hidden" name="_token" value="{{ csrf_token('delete-article' ~ article.id) }}">
+                                 <button class="btn btn-sm btn-danger">
+                                     <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
 
                             <!-- Partager -->
                             <a href="" class="btn btn-sm btn-warning">
@@ -79,7 +83,7 @@
                     <div class="card mb-3 shadow-sm" style="border-radius: 10px; border: 1px solid #ddd;">
                         <div class="card-body" style="padding: 1rem 1.25rem;">
                             <div class="d-flex justify-content-between mb-2">
-                                <strong>{{ comment.author }}</strong>
+                                <strong>{{ comment.author.email }}</strong>
                                 
                                  <form action="{{ path('app_comment_delete', {id: comment.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
                                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
@@ -107,11 +111,9 @@
                     </div>
                 {% endfor %}
             {% endif %}
- {% if app.user %}
+        {% if app.user %}
             {{ form_start(formComment, {'method': 'POST'}) }}
-            <div class="mb-3">
-                {{ form_row(formComment.author, { 'attr': {'class': 'form-control', 'placeholder': 'Votre nom'} }) }}
-            </div>
+           
             <div class="mb-3">
                 {{ form_row(formComment.content, { 'attr': {'class': 'form-control',  'placeholder': 'Votre commentaire'}  }) }}
             </div>
@@ -123,7 +125,7 @@
             {{ form_end(formComment) }}
         {% else %}
 
-            {% if app.user %}
+        {% if app.user %}
            <h4 class="mt-5">Laisser un commentaire</h4>
                     {{ form_start(formComment, {
                                     
@@ -132,9 +134,7 @@
                             }
                         )
                     }}
-                    <div class="mb-3">
-                        {{ form_row(formComment.author, { 'attr': {'class': 'form-control', 'placeholder': 'Votre nom'} }) }}
-                    </div>
+                    
                     <div class="mb-3">
                         {{ form_row(formComment.content, { 'attr': {'class': 'form-control',  'placeholder': 'Votre commentaire'}  }) }}
                     </div>
@@ -150,11 +150,10 @@
             
             <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
 
-            
+            {% endif %}
 
-            <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
             <a class="btn btn-outline-primary btn-sm" href="{{ path('security_login') }}">Connexion</a>
-        {% endif %}
+    {% endif %}
 </section>
     </div>
 </div>

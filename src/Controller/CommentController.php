@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/comment')]
 final class CommentController extends AbstractController
@@ -34,7 +35,7 @@ final class CommentController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_comment_edit')]
-    public function create(?Comment $comment = null, Request $request, EntityManagerInterface $manager): Response
+    public function create(?Comment $comment = null, Article $article,Request $request, EntityManagerInterface $manager, CommentRepository $commentRepository): Response
     {
         // Crée un nouveau commentaire s'il n'existe pas
         if (!$comment) {
@@ -50,8 +51,19 @@ final class CommentController extends AbstractController
             if (!$comment->getId()) {
                 $comment->setCreatedAt(new \DateTime());
             }
-            $manager->persist($comment);
-            $manager->flush();
+            $user = $this->getUser();
+             if ($user) {
+                $comment->setAuthor($user); // ou getEmail(), selon ton entité User
+            } else {
+                throw new \Exception('Utilisateur non connecté');
+            }
+            $comment->setContent($request->request->get('content'));
+            $comment->setArticle($article);
+            $commentRepository->save($comment, true);
+
+            $this->addFlash('success', 'Commentaire ajouté avec succès.');
+             $manager->persist($comment);
+             $manager->flush();
 
             // Redirige vers l’article lié au commentaire
             return $this->redirectToRoute('blog_show', ['id' => $comment->getArticle()->getId()]);

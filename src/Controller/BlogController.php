@@ -49,7 +49,7 @@ final class BlogController extends AbstractController
     #[Route('/', name: 'home')]
     public function home(): Response
     {
-        return $this->render('blog/home.html.twig');
+        return $this->render('home/index.html.twig');
     }
 
     // Route pour créer ou modifier un article
