@@ -34,19 +34,7 @@ class ArticlesFixtures extends Fixture
                         ->setCategory($category);
                 $manager->persist($article);
 
-                // 4 à 10 commentaires
-                for ($k = 1; $k <= mt_rand(4, 10); $k++) {
-                    $comment = new Comment();
-                    $now = new \DateTime();
-                    $interval = $now->diff($article->getCreatedAt());
-                    $minimum = '-' . $interval->days . ' days';
-
-                    $comment->setAuthor($faker->name)
-                            ->setContent('<p>' . $faker->paragraph() . '</p>') // un seul paragraphe
-                            ->setCreatedAt($faker->dateTimeBetween($minimum))
-                            ->setArticle($article);
-                    $manager->persist($comment);
-                }
+               
             }
         }
 

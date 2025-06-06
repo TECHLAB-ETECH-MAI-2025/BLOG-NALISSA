@@ -5,7 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Form\RegistrationTypeForm;
+use App\Form\UserTypeForm;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +20,7 @@ final class SecurityController extends AbstractController
 
        $user = new User();
 
-       $form = $this->createForm(RegistrationTypeForm::class, $user);
+       $form = $this->createForm(UserTypeForm::class, $user);
        $form->handleRequest($request);
 
        if($form->isSubmitted() && $form->isValid()){

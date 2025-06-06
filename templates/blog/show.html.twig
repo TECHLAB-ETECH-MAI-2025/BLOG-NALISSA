@@ -107,6 +107,22 @@
                     </div>
                 {% endfor %}
             {% endif %}
+ {% if app.user %}
+            {{ form_start(formComment, {'method': 'POST'}) }}
+            <div class="mb-3">
+                {{ form_row(formComment.author, { 'attr': {'class': 'form-control', 'placeholder': 'Votre nom'} }) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(formComment.content, { 'attr': {'class': 'form-control',  'placeholder': 'Votre commentaire'}  }) }}
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Ajouter 
+                </button>
+            </div>
+            {{ form_end(formComment) }}
+        {% else %}
+
             {% if app.user %}
            <h4 class="mt-5">Laisser un commentaire</h4>
                     {{ form_start(formComment, {
@@ -130,12 +146,20 @@
 
                 {{ form_end(formComment) }}
             {% else %}
+<<<<<<< HEAD
             
             <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
+=======
+
+>>>>>>> feature/home
             
+            <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
+
+            
+
+            <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
             <a class="btn btn-outline-primary btn-sm" href="{{ path('security_login') }}">Connexion</a>
-            {% endif %}
-                 
+        {% endif %}
 </section>
     </div>
 </div>
