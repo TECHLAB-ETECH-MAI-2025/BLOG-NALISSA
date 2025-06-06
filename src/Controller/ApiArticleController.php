@@ -27,22 +27,22 @@ final class ApiArticleController extends AbstractController
             $url_show = $this->generateUrl('blog_show',['id'=> $article->getId()]);
             $url_edit = $this->generateUrl('blog_edit',['id'=> $article->getId()]);
             $data[] = [
-<<<<<<< HEAD
+
                 'titlr' => $article->getTitle(),
-=======
+
                 'id' => $article->getId(),
                 'title' => $article->getTitle(),
->>>>>>> feature/home
+
                 'content' => $article->getContent(),
                 'createdAt' => $article->getCreatedAt(),
                 'actions' => '<div class="d-flex flex-row justify-content-end align-items-center gap-2">'
                         . '<a href="' .$url_show . '" class="btn btn-primary">Voir</a>'
-<<<<<<< HEAD
+
                         . '<a href="' .$url_edit . '" class="btn btn-success">Modifier</a>'
-=======
+
                         . '<a href="' .$url_edit . '" class="btn btn-success"><i class="fa-solid fa-pen-to-square"></i>
 </a>'
->>>>>>> feature/home
+
                     . '</div>'
             ];
         }
@@ -52,8 +52,7 @@ final class ApiArticleController extends AbstractController
             'data' => $data,
         ]);
     }
-<<<<<<< HEAD
-=======
+
 
 
     #[Route('/articles', name: 'articles_list')]
@@ -78,5 +77,5 @@ final class ApiArticleController extends AbstractController
 			return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
 		}
 
->>>>>>> feature/home
+
 }
