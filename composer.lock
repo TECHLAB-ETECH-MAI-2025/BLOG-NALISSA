@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-   
+    "content-hash": "d64f73f63519ff9ae5de6606338279ec",
     "packages": [
         {
             "name": "composer/semver",
@@ -8064,7 +8064,6 @@
             "time": "2024-12-09T19:04:36+00:00"
         },
         {
-
             "name": "symfonycasts/verify-email-bundle",
             "version": "v1.17.3",
             "source": {

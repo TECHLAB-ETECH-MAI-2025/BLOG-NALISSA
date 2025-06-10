@@ -250,8 +250,6 @@
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📝</text></svg>">
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 
    
 
@@ -259,21 +257,6 @@
      {{ encore_entry_link_tags('app') }}
     {% endblock %}
 
-    {% block stylesheets %}
-     {{ encore_entry_link_tags('app') }}
-=======
-    {% block stylesheets %}
-<<<<<<< HEAD
-     {{ encore_entry_link_tags('styles') }}
->>>>>>> c1cbc05 (Ajout des modifications sur les interactions avec DataTables en AJAX)
-=======
-    {% block stylesheets %}
-     {{ encore_entry_link_tags('styles') }}
->>>>>>> c1cbc05 (Ajout des modifications sur les interactions avec DataTables en AJAX)
-=======
-     {{ encore_entry_link_tags('app') }}
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
-    {% endblock %}
 </head>
 <body>
 <nav class="navbar navbar-expand-lg sticky-top">
@@ -329,6 +312,7 @@
 
 <main class="container" role="main">
     {% block body %}
+    {# Injecter les articles, formulaires, etc #}
     {% endblock %}
 </main>
 
@@ -374,4 +358,3 @@
 </script>
 </body>
 </html>
-
