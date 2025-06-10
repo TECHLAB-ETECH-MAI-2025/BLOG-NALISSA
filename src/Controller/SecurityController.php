@@ -10,6 +10,7 @@ use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
 final class SecurityController extends AbstractController
@@ -38,17 +39,21 @@ final class SecurityController extends AbstractController
 
 
 
-        return $this->render('security/registration.html.twig', [
-            'formSecurity' => $form->createView(),
+        return $this->render('registration/register.html.twig', [
+            'registrationForm' => $form->createView(),
 
         ]);
     }
      
     #[Route('/connexion', name: 'security_login')]
 
-    public function login(){
+    public function login(AuthenticationUtils $authenticationUtils){
+             $error = $authenticationUtils->getLastAuthenticationError();
          
-     return $this->render('security/login.html.twig');
+     return $this->render('security/login.html.twig', [
+        'error' => $error,
+     ]);
+
         
     }
 

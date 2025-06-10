@@ -24,6 +24,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private array $roles = [];
+    #[ORM\Column(type: 'datetime_immutable' , nullable: false)]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(type: 'boolean')]
+    private ?bool $isVerified = false;
+
 
     /**
      * @var string The hashed password
@@ -35,12 +41,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $username = null;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(type: 'boolean')]
-    private ?bool $isVerified = false;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -50,13 +50,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->email;
     }
-
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
     public function setEmail(string $email): static
     {
         $this->email = $email;
 
         return $this;
     }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+		{
+			return $this->createdAt;
+		}
+
+		public function setCreatedAt(\DateTimeImmutable $createdAt): static
+		{
+			$this->createdAt = $createdAt;
+
+			return $this;
+		}
+
+		public function isVerified(): ?bool
+		{
+			return $this->isVerified;
+		}
+
+		public function setIsVerified(bool $isVerified): static
+		{
+			$this->isVerified = $isVerified;
+
+			return $this;
+		}
 
     /**
      * A visual identifier that represents this user.
@@ -89,29 +116,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    public function getCreatedAt(): ?\DateTimeImmutable
-		{
-			return $this->createdAt;
-		}
-
-		public function setCreatedAt(\DateTimeImmutable $createdAt): static
-		{
-			$this->createdAt = $createdAt;
-
-			return $this;
-		}
-
-		public function isVerified(): ?bool
-		{
-			return $this->isVerified;
-		}
-
-		public function setIsVerified(bool $isVerified): static
-		{
-			$this->isVerified = $isVerified;
-
-			return $this;
-		}
 
     /**
      * @see PasswordAuthenticatedUserInterface
