@@ -5,7 +5,11 @@
         "@symfony/webpack-encore": "^5.0.0",
         "core-js": "^3.38.0",
         "regenerator-runtime": "^0.13.9",
+<<<<<<< HEAD
         "sass": "^1.89.2",
+=======
+        "sass": "^1.89.0",
+>>>>>>> c1cbc05 (Ajout des modifications sur les interactions avec DataTables en AJAX)
         "sass-loader": "^10.5.2",
         "webpack": "^5.74.0",
         "webpack-cli": "^5.1.0",
