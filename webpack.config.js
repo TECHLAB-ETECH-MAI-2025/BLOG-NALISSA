@@ -1,6 +1,5 @@
 const Encore = require('@symfony/webpack-encore');
 
-<<<<<<< HEAD
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -108,7 +107,6 @@ Encore
 
 ;
 
-=======
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -185,5 +183,4 @@ Encore
     //.autoProvidejQuery()
 ;
 
->>>>>>> c1cbc05 (Ajout des modifications sur les interactions avec DataTables en AJAX)
 module.exports = Encore.getWebpackConfig();
