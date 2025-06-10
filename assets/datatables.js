@@ -38,7 +38,7 @@ $(function () {
         }
 
 
-$(function () {
+
     console.log("Initialisation de DataTables...");
     $('#articlesTable').DataTable({
         ajax: "{{ path('api_articles') }}",
@@ -55,6 +55,3 @@ $(function () {
         responsive: true
     });
 });
-})
-
-    
