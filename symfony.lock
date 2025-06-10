@@ -349,6 +349,7 @@
         ]
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
     "symfonycasts/reset-password-bundle": {
         "version": "1.23",
         "recipe": {
@@ -361,6 +362,8 @@
             "./config/packages/reset_password.yaml"
         ]
     },
+=======
+>>>>>>> d7b49ed (chore(project): mise à jour des dépendances)
 =======
 >>>>>>> d7b49ed (chore(project): mise à jour des dépendances)
     "symfonycasts/verify-email-bundle": {
