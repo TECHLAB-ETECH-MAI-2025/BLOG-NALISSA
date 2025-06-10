@@ -1,16 +1,13 @@
 const Encore = require('@symfony/webpack-encore');
 
-<<<<<<< HEAD
-=======
+
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
->>>>>>> c1cbc05 (Ajout des modifications sur les interactions avec DataTables en AJAX)
 if (!Encore.isRuntimeEnvironmentConfigured()) {
     Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
 
 Encore
-<<<<<<< HEAD
     .setOutputPath('public/build/')
     .setPublicPath('/build')
 
@@ -38,7 +35,7 @@ Encore
         config.corejs = 3;
     })
     .enableSassLoader()
-=======
+
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
@@ -54,6 +51,7 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('app', './assets/styles/app.scss')
+
     .addEntry('datatables', './assets/datatables.js')
     .addEntry('articles_list', './assets/articles_list.js')
     .addEntry('like', './assets/like.js')
@@ -106,7 +104,7 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
->>>>>>> c1cbc05 (Ajout des modifications sur les interactions avec DataTables en AJAX)
+
 ;
 
 module.exports = Encore.getWebpackConfig();
