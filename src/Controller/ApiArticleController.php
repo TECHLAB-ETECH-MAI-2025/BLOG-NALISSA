@@ -29,14 +29,17 @@ final class ApiArticleController extends AbstractController
             $data[] = [
                 'id' => $article->getId(),
                 'title' => $article->getTitle(),
-                'titlr' => $article->getTitle(),
+
+
+
                 'content' => $article->getContent(),
                 'createdAt' => $article->getCreatedAt(),
                 'actions' => '<div class="d-flex flex-row justify-content-end align-items-center gap-2">'
                         . '<a href="' .$url_show . '" class="btn btn-primary">Voir</a>'
-                        . '<a href="' .$url_edit . '" class="btn btn-success"><i class="fa-solid fa-pen-to-square"></i>
-</a>'
                         . '<a href="' .$url_edit . '" class="btn btn-success">Modifier</a>'
+
+
+
                     . '</div>'
             ];
         }
@@ -46,6 +49,7 @@ final class ApiArticleController extends AbstractController
             'data' => $data,
         ]);
     }
+
 
 
     #[Route('/articles', name: 'articles_list')]
