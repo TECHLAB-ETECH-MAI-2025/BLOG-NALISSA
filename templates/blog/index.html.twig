@@ -29,18 +29,12 @@
                     {{ article.content[:300]|raw }}{% if article.content|length > 300 %}...{% endif %}
                 </p>
                 <a href="{{ path('blog_show', {'id': article.id}) }}" class="btn btn-theme btn-sm">Lire la suite</a>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                 {% if is_granted('ROLE_ADMIN') %}
 
                 <a href="{{ path('blog_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Modifier</a> 
                 {% endif %}
-=======
-                 <a href="{{ path('blog_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Modifier</a> 
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
-=======
-                 <a href="{{ path('blog_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Modifier</a> 
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
+                
                  <a href="" class="btn btn-sm btn-primary ">Commenter</a> 
             </div>
         </article>

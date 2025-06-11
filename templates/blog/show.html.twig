@@ -6,13 +6,7 @@
 
 
         <div class="mb-4 d-flex justify-content-end">
-<<<<<<< HEAD
-<<<<<<< HEAD
-            
-=======
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
-=======
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
+
             <a href="{{ path('blog_create') }}" class="btn btn-theme">
                 <i class="bi bi-plus-lg"></i>+ Ajouter un article
             </a>
@@ -51,21 +45,16 @@
                                 <i class="fa-regular fa-comment"></i>
                             </a>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                             {% if is_granted('ROLE_ADMIN') %}
-=======
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
-=======
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
+
                             <!-- Modifier -->
                             <a href="{{ path('blog_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
 
                             <!-- Supprimer -->
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 
                              <form action="{{ path('blog_delete', {id: article.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cet article ?');">
                                  <input type="hidden" name="_token" value="{{ csrf_token('delete-article' ~ article.id) }}">
@@ -74,19 +63,14 @@
                                     </button>
                                 </form>
                             {% endif %}
-=======
-=======
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
+
                             <form action="{{ path('blog_delete', {id: article.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cet article ?');">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete-article' ~ article.id) }}">
                                 <button class="btn btn-sm btn-danger">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </form>
-<<<<<<< HEAD
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
-=======
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
+
 
                             <!-- Partager -->
                             <a href="" class="btn btn-sm btn-warning">
@@ -173,36 +157,23 @@
 
                 {{ form_end(formComment) }}
             {% else %}
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 
             <button class="like-btn" data-url="{{ path('article_like', { id: article.id }) }}">
                ❤️ <span class="like-count">{{ article.likes }}</span>
             </button>
-=======
-            
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
-=======
+
             <button class="like-btn" data-url="{{ path('article_like', { id: article.id }) }}">
                ❤️ <span class="like-count">{{ article.likes }}</span>
             </button>
->>>>>>> c1cbc05 (Ajout des modifications sur les interactions avec DataTables en AJAX)
-=======
+
             <button class="like-btn" data-url="{{ path('article_like', { id: article.id }) }}">
                ❤️ <span class="like-count">{{ article.likes }}</span>
             </button>
->>>>>>> c1cbc05 (Ajout des modifications sur les interactions avec DataTables en AJAX)
-=======
-            
->>>>>>> 0bcbf57 (chore(cleanup): ajustements styles, vues, fixtures)
-=======
+
             <button class="like-btn" data-url="{{ path('article_like', { id: article.id }) }}">
                ❤️ <span class="like-count">{{ article.likes }}</span>
             </button>
->>>>>>> c1cbc05 (Ajout des modifications sur les interactions avec DataTables en AJAX)
             <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
             
             <h1>Vous ne pouvez pas commenter si vous n'êtes pas connecté ! </h1>
