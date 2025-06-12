@@ -45,6 +45,7 @@ public function inde(EntityManagerInterface $entityManager): Response
         if (!$receiver) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
+        $users = $entityManager->getRepository(User::class)->findAll();
 
         $messages = $messageRepository->findConversation($currentUser->getId(), $receiverId);
 
@@ -66,6 +67,8 @@ public function inde(EntityManagerInterface $entityManager): Response
             'messages' => $messages,
             'receiver' => $receiver,
             'form' => $form->createView(),
+            'users' => $users,
+
         ]);
     }
 }
