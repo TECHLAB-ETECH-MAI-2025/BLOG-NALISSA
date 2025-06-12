@@ -53,7 +53,12 @@
          * @var Collection<int, ArticleLike>
          * @ORM\OneToMany(targetEntity="App\Entity\ArticleLike", mappedBy="article", orphanRemoval=true)
          */
-        private  $likes;
+        /**
+         * @var Collection<int, ArticleLike>
+         */
+        #[ORM\OneToMany(targetEntity: ArticleLike::class, mappedBy: 'article', orphanRemoval: true)]
+        private Collection $likes;
+
 
         /**
          * @var Collection<int, Comment>
@@ -180,6 +185,10 @@
             {
                 return $this->likes;
             }
+            public function getLikesCount(): int
+            {
+                return count($this->likes);
+            }
 
             public function addLike(ArticleLike $like): self
             {
@@ -203,8 +212,5 @@
                 return $this;
             }
 
-            public function getLikesCount(): int
-            {
-                return $this->likes->count();
-            }
+           
     }

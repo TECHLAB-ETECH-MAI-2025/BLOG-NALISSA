@@ -2,7 +2,7 @@ import './bootstrap.js';
 import './styles/app.scss';
 import './datatables';
 import './article';
-import './article_list';
+import './articles_list';
 /*
  * Welcome to your app's main JavaScript file!
  *

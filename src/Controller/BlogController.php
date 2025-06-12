@@ -10,6 +10,10 @@ use \DateTimeImmutable;
 
 
 use App\Form\ArticleType;
+use App\Repository\CommentRepository;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use App\Form\CommentType;
 use App\Repository\ArticleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -91,7 +95,7 @@ final class BlogController extends AbstractController
 
     // Route pour afficher un article et ses commentaires
     #[Route('/blog/{id}', name: 'blog_show', methods: ['GET', 'POST'])]
-    public function show(Article $article, Request $request, EntityManagerInterface $manager): Response
+    public function show(Article $article, Request $request, EntityManagerInterface $manager, Security $security): Response
     {
         // Prépare un nouveau commentaire
         $comment = new Comment();
@@ -101,7 +105,8 @@ final class BlogController extends AbstractController
         // Si le formulaire est soumis et valide
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setCreatedAt(new DateTime())
-                    ->setArticle($article);
+                    ->setArticle($article)
+                    ->setAuthor($security->getUser());
 
             // Enregistre le commentaire
             $manager->persist($comment);
@@ -121,6 +126,36 @@ final class BlogController extends AbstractController
             'editMode' => $article->getId() !== null,
         ]);
     }
+
+
+    #[Route('/like/{type}/{id}', name: 'like', methods: ['POST'])]
+    public function like(
+        string $type,
+        int $id,
+        ArticleRepository $articleRepo,
+        CommentRepository $commentRepo,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        if ($type === 'article') {
+            $entity = $articleRepo->find($id);
+        } elseif ($type === 'comment') {
+            $entity = $commentRepo->find($id);
+        } else {
+            return new JsonResponse(['error' => 'Type inconnu'], 400);
+        }
+
+        if (!$entity) {
+            return new JsonResponse(['error' => 'Non trouvé'], 404);
+        }
+
+        $entity->incrementLikes();
+        $em->flush();
+
+        return new JsonResponse(['likesCount' => $entity->getLikes()]);
+    }
+
+
+
 
     // Route pour supprimer un article
     #[Route('/blog/{id}/delete', name: 'blog_delete', methods: ['POST'])]

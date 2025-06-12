@@ -28,12 +28,32 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?Article $article = null;
 
+    #[ORM\Column(type: 'integer')]
+    private int $likes = 0;
+
     public function getId(): ?int
     {
         return $this->id;
     }
+    public function getLikes(): int
+    {
+        return $this->likes;
+    }
 
-    public function getAuthor(): ?string
+    public function setLikes(int $likes): self
+    {
+        $this->likes = $likes;
+        return $this;
+    }
+
+    public function incrementLikes(): self
+    {
+        $this->likes++;
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+
     {
         return $this->author;
     }

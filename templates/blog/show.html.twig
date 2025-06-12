@@ -36,8 +36,11 @@
 
                     <div  style="padding: 1rem 1.25rem;">
                                                 <!-- J'aime -->
-                            <a href="" class="btn btn-sm btn-theme">
-                                <i class="fa-regular fa-thumbs-up"></i> (0)
+                            <!-- <a href="" class="btn btn-sm btn-theme"> -->
+                            <a href="#" class="btn btn-sm btn-theme like-btn" data-id="{{ article.id }}" data-type="article">
+                                <i class="fa-regular fa-thumbs-up"></i> 
+                                <span>{{ article.getLikesCount() }}</span>
+
                             </a>
 
                             <!-- Commenter -->
@@ -94,7 +97,7 @@
                     <div class="card mb-3 shadow-sm" style="border-radius: 10px; border: 1px solid #ddd;">
                         <div class="card-body" style="padding: 1rem 1.25rem;">
                             <div class="d-flex justify-content-between mb-2">
-                                <strong>{{ comment.author.email }}</strong>
+                                    <strong>{{ comment.author.firstName }} {{ comment.author.lastName }}</strong>
                                 
                                  <form action="{{ path('app_comment_delete', {id: comment.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
                                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
@@ -111,8 +114,9 @@
                                 <small class="text-muted">{{ comment.createdAt|date('d/m/Y à H:i') }}</small>
                             </div>
                             <p class="mb-0" style="white-space: pre-wrap; line-height: 1.5;">{{ comment.content|raw }}</p>
-                             <a href="" class="btn btn-sm btn-primary">
-                                <i class="fa-regular fa-thumbs-up"></i> (0)
+                             <a href="#" class="btn btn-sm btn-primary like-btn" data-id="{{ comment.id }}" data-type="comment">
+                               
+                                <i class="fa-regular fa-thumbs-up"></i> ({{ comment.likes }})
 
                              </a>
                              <a href=""class="btn btn-sm btn-primary"> 

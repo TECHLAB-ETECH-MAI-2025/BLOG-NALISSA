@@ -60,9 +60,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'receiver')]
     private Collection $receivedMessages;
 
+    #[ORM\Column(type: 'integer')]
+    private int $likes = 0;
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+    public function getLikes(): int
+    {
+        return $this->likes;
+    }
+
+    public function setLikes(int $likes): self
+    {
+        $this->likes = $likes;
+        return $this;
+    }
+
+    public function incrementLikes(): self
+    {
+        $this->likes++;
+        return $this;
+    }
+    public function decrementLikes(): void
+    {
+        if ($this->likes > 0) {
+            $this->likes--;
+        }
     }
 
     public function getEmail(): ?string
