@@ -1,0 +1,264 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs{% endblock %}
+{% block stylesheets %}
+<style>
+    .admin-container {
+        padding: 2rem;
+        background-color: #f9f9f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .admin-container h1, .admin-container h2 {
+        color: #2B6CB0;
+    }
+  
+    .admin-menu ul {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+
+    .admin-menu a {
+        text-decoration: none;
+        font-weight: bold;
+        color: #2B6CB0;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .admin-menu a:hover {
+        background-color: #ebf8ff;
+    }
+
+    .btn-success {
+        background-color: #38A169;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+    .btn-success:hover {
+        background-color: #2F855A;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    thead {
+        background-color: #2B6CB0;
+        color: white;
+    }
+
+    th, td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .d-flex {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-sm {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background-color: #3182CE;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #2B6CB0;
+    }
+
+    .btn-danger {
+        background-color: #E53E3E;
+        color: white;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #C53030;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+    }
+
+    .alert {
+        margin: 1rem 0;
+        padding: 1rem;
+        border-radius: 5px;
+    }
+
+    .alert-info {
+        background-color: #ebf8ff;
+        color: #2B6CB0;
+    }
+
+    .modal-header, .modal-body, .modal-footer {
+        padding: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .admin-menu ul {
+            flex-direction: column;
+        }
+
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+
+        thead {
+            display: none;
+        }
+
+        tr {
+            margin-bottom: 1rem;
+        }
+
+        td {
+            position: relative;
+            padding-left: 50%;
+        }
+
+        td::before {
+            position: absolute;
+            left: 1rem;
+            width: 45%;
+            white-space: nowrap;
+            font-weight: bold;
+        }
+
+        td:nth-child(1)::before { content: "ID"; }
+        td:nth-child(2)::before { content: "Nom"; }
+        td:nth-child(3)::before { content: "Email"; }
+        td:nth-child(4)::before { content: "Rôles"; }
+        td:nth-child(5)::before { content: "Vérifié"; }
+        td:nth-child(6)::before { content: "Inscription"; }
+        td:nth-child(7)::before { content: "Actions"; }
+    }
+</style>
+{% endblock %}
+
+
+{% block body %}
+<section class="admin-container">
+
+    <h1>Menu d'administration</h1>
+
+    <nav class="admin-menu">
+        <ul>
+            <li><a href="{{ path('admin_dashboard') }}">Tableau de bord</a></li>
+            <li><a href="{{ path('admin_users') }}">Gestion des utilisateurs</a></li>
+            <li><a href="{{ path('app_home') }}">Retour au site</a></li>
+        </ul>
+    </nav>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <h2>Gestion des utilisateurs</h2>
+
+    <a href="{{ path('admin_user_new') }}" class="btn btn-success mb-3">➕ Nouvel utilisateur</a>
+
+    {% if users is not empty %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Rôles</th>
+                    <th>Vérifié</th>
+                    <th>Date d'inscription</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.fullName }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% for role in user.roles %}
+                                {% if role == 'ROLE_ADMIN' %}
+                                    Admin
+                                {% elseif role == 'ROLE_SUPER_ADMIN' %}
+                                    Super Admin
+                                {% elseif role == 'ROLE_USER' %}
+                                    Utilisateur
+                                {% else %}
+                                    {{ role }}
+                                {% endif %}
+                                {% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{ user.isVerified ? 'Oui' : 'Non' }}</td>
+                        <td>{{ user.createdAt|date('d/m/Y') }}</td>
+                        <td>
+                            <div class="d-flex gap-1">
+
+                                <a href="{{ path('admin_user_edit', { id: user.id }) }}" class="btn btn-sm btn-primary">✏️ Modifier</a>
+                                <button class="btn btn-sm btn-danger " data-bs-toggle="modal" data-bs-target="#deleteModal-{{ user.id }}">🗑 Supprimer</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {# Modal de confirmation #}
+                    <div class="modal fade" id="deleteModal-{{ user.id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ user.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel-{{ user.id }}">Confirmation de suppression</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Êtes-vous sûr de vouloir supprimer l'utilisateur <strong>{{ user.fullName }}</strong> ({{ user.email }}) ?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                    <a href="{{ path('admin_user_delete', { id: user.id }) }}" class="btn btn-danger">Supprimer</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">
+            Aucun utilisateur trouvé.
+        </div>
+    {% endif %}
+
+</section>
+{% endblock %}

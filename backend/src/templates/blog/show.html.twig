@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="my-5 d-flex justify-content-center">
+    <div style="max-width: 800px; width: 100%; padding: 0 15px;">
+        <div class="mb-4 d-flex justify-content-end">
+            <a href="{{ path('blog_create') }}" class="btn btn-theme">
+                <i class="bi bi-plus-lg"></i>+ Ajouter un article
+            </a>
+        </div>
+
+        <article class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User Icon" width="30">
+                <strong>{{ article.author.firstName }} {{ article.author.lastName }}</strong>
+                <h2 class="mb-0">{{ article.title }}</h2>
+                <small>
+                    Publié le 
+                    le {{ article.createdAt|date('d/m/Y') }} à {{ article.createdAt|date('H:i') }} 
+                    dans la catégorie <span class="badge bg-secondary">{{ article.category.title }}</span>
+                </small>
+            </div>
+            <div class="card-body">
+                {% if article.image %}
+                    <img src="{{ article.image }}" alt="{{ article.title }}" class="img-fluid mb-4 rounded mx-auto d-block" style="max-height: 400px; object-fit: cover;">
+                {% else %}
+                    <div class="text-center mb-4 text-muted">Pas d'image disponible</div>
+                {% endif %}
+
+                <p class="fs-5" style="line-height: 1.6;">{{ article.content|raw }}</p>
+
+                <hr>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <a href="{{ path('articles_list') }}" class="btn btn-theme">← Retour aux articles</a>
+                    <div style="padding: 1rem 1.25rem;">
+                        <a href="#" class="btn btn-sm btn-theme like-btn" data-id="{{ article.id }}" data-type="article">
+                            <i class="fa-regular fa-thumbs-up"></i> 
+                            <span id="like-count">{{ article.likes|length }}</span>
+                        </a>
+
+                        <a href="#" class="btn btn-sm btn-success">
+                            <i class="fa-regular fa-comment"></i>
+                        </a>
+
+                        {% if app.user and (is_granted('ROLE_ADMIN') or app.user.id == article.author.id) %}
+                            <a href="{{ path('blog_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <form action="{{ path('blog_delete', {id: article.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cet article ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-article' ~ article.id) }}">
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        <a href="#" class="btn btn-sm btn-warning">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <section id="Commentaires" class="mt-5">
+         {% if app.user %}
+                <h4 class="mt-5">Laisser un commentaire</h4>
+                {{ form_start(formComment, {'method': 'POST'}) }}
+                <div class="mb-3">
+                    {{ form_row(formComment.content, { 'attr': {'class': 'form-control', 'placeholder': 'Votre commentaire'} }) }}
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Ajouter 
+                    </button>
+                </div>
+                {{ form_end(formComment) }}
+            {% else %}
+                <h5 class="mt-4 text-muted">Vous ne pouvez pas commenter si vous n'êtes pas connecté !</h5>
+                <a class="btn btn-outline-primary btn-sm" href="{{ path('security_login') }}">Connexion</a>
+            {% endif %}
+            <h3>Commentaires ({{ article.comments|length }})</h3>
+
+            {% if article.comments|length == 0 %}
+                <p class="text-muted">Aucun commentaire pour cet article pour le moment.</p>
+            {% else %}
+                {% for comment in article.comments %}
+                    <div class="card mb-3 shadow-sm" style="border-radius: 10px; border: 1px solid #ddd;">
+                        <div class="card-body" style="padding: 1rem 1.25rem;">
+                            <div class="d-flex justify-content-between mb-2">
+                            <div>
+                            <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User Icon" width="20">
+                                <strong>{{ comment.author.firstName }} {{ comment.author.lastName }}</strong>
+                            </div>
+
+                                
+                                <div class="text-end">
+                                    {% if app.user and app.user.id == comment.author.id %}
+                                        <form action="{{ path('app_comment_delete', {id: comment.id}) }}" method="POST" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                            <button class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                        <a href="{{ path('app_comment_edit', {'id': comment.id}) }}" class="btn btn-sm btn-primary">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                    {% endif %}
+                                    <a href="#" class="btn btn-sm btn-warning">
+                                        <i class="fa-solid fa-flag"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <p class="mb-0" style="white-space: pre-wrap; line-height: 1.5;">{{ comment.content|raw }}</p>
+                            <a href="#" class="btn btn-sm btn-primary like-btn" data-id="{{ comment.id }}" data-type="comment">
+                                <i class="fa-regular fa-thumbs-up"></i>
+                            <span id="like-count">{{ comment.likes|length }}</span>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-primary"> 
+                                <i class="fa-solid fa-reply"></i> 
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+           
+        </section>
+    </div>
+</div>
+
+<script>
+    const showBtn = document.getElementById('showCommentFormBtn');
+    const form = document.getElementById('commentForm');
+    const cancelBtn = document.getElementById('cancelCommentBtn');
+
+    if (showBtn && form && cancelBtn) {
+        showBtn.addEventListener('click', () => {
+            form.style.display = 'block';
+            showBtn.style.display = 'none';
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            form.style.display = 'none';
+            showBtn.style.display = 'inline-block';
+        });
+    }
+</script>
+{% endblock %}

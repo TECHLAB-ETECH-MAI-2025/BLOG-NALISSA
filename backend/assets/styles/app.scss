@@ -1,0 +1,131 @@
+
+@import "~bootstrap/scss/bootstrap";
+
+	@import "~datatables.net-bs5/css/dataTables.bootstrap5.min.css";
+	@import "~datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css";
+
+	// Styles personnalisés
+	.like-button {
+		cursor: pointer;
+		transition: all 0.3s ease;
+
+		&:hover {
+			transform: scale(1.1);
+		}
+
+		&.liked {
+			color: #e74c3c;
+		}
+	}
+	a {
+    text-decoration: none;
+    }
+
+
+	.comment-form {
+		margin-bottom: 2rem;
+	}
+
+	.loading-spinner {
+		display: inline-block;
+		width: 1rem;
+		height: 1rem;
+		border: 0.2em solid currentColor;
+		border-right-color: transparent;
+		border-radius: 50%;
+		animation: spinner-border .75s linear infinite;
+	}
+
+	.search-container {
+		position: relative;
+		margin-bottom: 2rem;
+
+		.search-results {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			background: white;
+			border: 1px solid #ddd;
+			border-radius: 0 0 0.25rem 0.25rem;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+			z-index: 1000;
+			max-height: 300px;
+			overflow-y: auto;
+			display: none;
+
+			&.show {
+				display: block;
+			}
+
+			.search-item {
+				padding: 0.75rem 1rem;
+				border-bottom: 1px solid #eee;
+				cursor: pointer;
+
+				&:hover {
+					background-color: #f8f9fa;
+				}
+
+				&:last-child {
+					border-bottom: none;
+				}
+			}
+		}
+	}
+
+	
+        /* Personnalisation du thème */
+        :root {
+            --bs-primary: #3182CE; /* Couleur principale */
+        }
+        h1 {
+            color: var(--bs-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Boutons d'action */
+        .btn-theme {
+            background-color: var(--bs-primary);
+            color: white;
+            border: none;
+        }
+        .btn-theme:hover, .btn-theme:focus {
+            background-color: #2768b2; /* un peu plus foncé au survol */
+            color: white;
+        }
+
+        /* Table */
+        table.dataTable {
+            border-collapse: separate !important;
+            border-spacing: 0 0.75rem;
+        }
+
+        /* Ligne de table arrondie */
+        table.dataTable tbody tr {
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgb(49 130 206 / 0.15);
+        }
+
+        /* Padding et centrage des colonnes */
+        table.dataTable th, table.dataTable td {
+            vertical-align: middle;
+            padding: 0.75rem 1rem;
+        }
+    // assets/styles/app.scss
+
+body {
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+.btn-theme {
+  background-color: #3182CE;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #2563eb;
+  }
+}
