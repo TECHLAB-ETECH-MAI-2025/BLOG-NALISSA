@@ -4,7 +4,12 @@ namespace App\Entity;
 
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+
+
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
@@ -28,29 +33,45 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?Article $article = null;
 
-    #[ORM\Column(type: 'integer')]
-    private int $likes = 0;
+    #[ORM\OneToMany(mappedBy: 'comment', targetEntity: CommentLike::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $likes;
 
+
+      public function __construct()
+    {
+        $this->likes = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
     }
-    public function getLikes(): int
+    public function getLikes(): Collection
     {
         return $this->likes;
     }
 
-    public function setLikes(int $likes): self
+   
+    public function addLike(CommentLike $like): self
     {
-        $this->likes = $likes;
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setComment($this);
+        }
         return $this;
     }
 
-    public function incrementLikes(): self
+    public function removeLike(CommentLike $like): self
     {
-        $this->likes++;
+       
+        if ($this->likes->removeElement($like)) {
+            if ($like->getComment() === $this) {
+                $like->setComment(null);
+            }
+        }
         return $this;
     }
+
+    
 
     public function getAuthor(): ?User
 

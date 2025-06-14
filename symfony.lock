@@ -348,11 +348,7 @@
             "./webpack.config.js"
         ]
     },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 95eb869 (Amelioration du composer.json et webpack.config.js)
+
     "symfonycasts/reset-password-bundle": {
         "version": "1.23",
         "recipe": {
@@ -365,13 +361,7 @@
             "./config/packages/reset_password.yaml"
         ]
     },
-<<<<<<< HEAD
-=======
->>>>>>> d7b49ed (chore(project): mise à jour des dépendances)
-=======
->>>>>>> d7b49ed (chore(project): mise à jour des dépendances)
-=======
->>>>>>> 95eb869 (Amelioration du composer.json et webpack.config.js)
+
     "symfonycasts/verify-email-bundle": {
         "version": "v1.17.3"
     },

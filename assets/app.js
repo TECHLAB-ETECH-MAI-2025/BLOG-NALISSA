@@ -3,6 +3,7 @@ import './styles/app.scss';
 import './datatables';
 import './article';
 import './articles_list';
+import './like.js';
 /*
  * Welcome to your app's main JavaScript file!
  *

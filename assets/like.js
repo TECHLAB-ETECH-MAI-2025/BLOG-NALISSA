@@ -1,4 +1,5 @@
 import $ from 'jquery';
+
 window.$ = $;
 window.jQuery = $;
 
@@ -6,35 +7,39 @@ document.addEventListener('DOMContentLoaded', function () {
     $('.like-btn').on('click', function (e) {
         e.preventDefault();
 
-        const btn = $(this);
-        const targetId = btn.data('id');
-        const targetType = btn.data('type'); // article ou comment
+        const button = $(this);
+        const id = button.data('id');
+        const type = button.data('type');
 
-        if (!targetId || !targetType) {
-            console.error('ID ou Type manquant');
+        if (!id || !type) {
+            console.error('ID ou type manquant');
             return;
         }
 
-        btn.prop('disabled', true);
+        button.prop('disabled', true);
 
         $.ajax({
-            url: `/like/${targetType}/${targetId}`,
+            url: `/like/${type}/${id}`,
             type: 'POST',
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
             },
             success: function (data) {
-                btn.find('span').text(data.likesCount);
+                console.log('Réponse reçue:', data);
+
+                button.find('span').text(data.likesCount);
             },
-            error: function (xhr) {
+            error: function (xhr, status, error) {
+                console.error('Erreur AJAX:', error);
                 if (xhr.status === 401) {
-                    alert("Vous devez être connecté pour liker.");
+                    alert('Vous devez être connecté pour liker.');
                 } else {
-                    alert("Une erreur s'est produite.");
+                    alert('Erreur inconnue.');
                 }
             },
-            complete: function () {
-                btn.prop('disabled', false);
+            complete: function() {
+                button.prop('disabled', false);
             }
         });
     });

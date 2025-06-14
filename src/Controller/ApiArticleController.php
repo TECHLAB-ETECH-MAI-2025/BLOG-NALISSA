@@ -9,8 +9,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Article;
+use App\Entity\ArticleLike;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
+use Symfony\Bundle\SecurityBundle\Security;
+
 
 final class ApiArticleController extends AbstractController
 {
@@ -68,6 +71,36 @@ final class ApiArticleController extends AbstractController
 
 			return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
 		}
+        #[Route('/article/{id}/like', name: 'article_like', methods: ['POST'])]
+        public function like(Article $article, EntityManagerInterface $em, Security $security): JsonResponse
+        {
+            $user = $security->getUser();
+
+            if (!$user) {
+                return new JsonResponse(['message' => 'Unauthorized'], 401);
+            }
+
+            // Vérifier si l'utilisateur a déjà liké l'article
+            foreach ($article->getLikes() as $like) {
+                if ($like->getUser() === $user) {
+                    // Supprimer le like
+                    $article->removeLike($like);
+                    $em->remove($like);
+                    $em->flush();
+                    return new JsonResponse(['likes' => $article->getLikesCount()]);
+                }
+            }
+
+            // Ajouter un nouveau like
+            $like = new ArticleLike();
+            $like->setArticle($article);
+            $like->setUser($user);
+            $em->persist($like);
+            $em->flush();
+
+            return new JsonResponse(['likes' => $article->getLikesCount()]);
+        }
+
 
         
 

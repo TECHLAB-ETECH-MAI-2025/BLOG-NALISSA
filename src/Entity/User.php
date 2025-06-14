@@ -53,6 +53,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender')]
     private Collection $senderMessages;
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Article::class)]
+    private Collection $articles;
 
     /**
      * @var Collection<int, Message>
@@ -89,7 +91,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->likes--;
         }
     }
-
+    
+ 
     public function getEmail(): ?string
     {
         return $this->email;

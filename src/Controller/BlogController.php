@@ -66,6 +66,7 @@ final class BlogController extends AbstractController
             $article = new Article();
         }
 
+
         // Crée le formulaire lié à l'article
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
@@ -75,7 +76,8 @@ final class BlogController extends AbstractController
 
             // Ajoute la date de création si c'est un nouvel article
             if (!$article->getId()) {
-                $article->setCreatedAt(new DateTimeImmutable());
+                $article->setCreatedAt(new DateTimeImmutable())
+                        ->setAuthor($this->getUser());
             }
 
             // Enregistre l'article

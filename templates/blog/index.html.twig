@@ -13,16 +13,17 @@
     </div>
 <div id="suggestions"></div>
 
-
     {% for article in articles %}
         <article class="card mb-4 shadow-sm">
+            <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User Icon" width="30">
+            <strong>{{ article.author.firstName }} {{ article.author.lastName }}</strong>
             {% if article.image %}
-                <img src="{{ article.image }}" class="card-img-top" alt="{{ article.title }}" style="max-height: 400px; object-fit: cover;">
+                <img src="{{ article.image }}" class="card-img-top" alt="" style="max-height: 400px; object-fit: cover;">
             {% endif %}
             <div class="card-body">
                 <h2 class="card-title">{{ article.title }}</h2>
                 <p class="card-text text-muted mb-2">
-                    Écrit le {{ article.createdAt|date('d/m/Y') }} à {{ article.createdAt|date('H:i') }} dans la catégorie
+                    Publié le {{ article.createdAt|date('d/m/Y') }} à {{ article.createdAt|date('H:i') }} dans la catégorie
                     <span class="badge bg-secondary">{{ article.category.title }}</span> 
                 </p>
                 <p class="card-text">
@@ -30,12 +31,13 @@
                 </p>
                 <a href="{{ path('blog_show', {'id': article.id}) }}" class="btn btn-theme btn-sm">Lire la suite</a>
 
-                {% if is_granted('ROLE_ADMIN') %}
+                {% if app.user and (is_granted('ROLE_ADMIN') or app.user.id == article.author.id) %}
+
 
                 <a href="{{ path('blog_edit', {'id': article.id}) }}" class="btn btn-sm btn-warning">Modifier</a> 
                 {% endif %}
+                 <a href="{{ path('blog_show', {'id': article.id}) }}" class="btn btn-sm btn-primary ">Commenter</a> 
                 
-                 <a href="" class="btn btn-sm btn-primary ">Commenter</a> 
             </div>
         </article>
     {% else %}

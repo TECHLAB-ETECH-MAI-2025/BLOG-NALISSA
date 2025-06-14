@@ -2,19 +2,20 @@
 
 namespace App\Entity;
 
+use App\Repository\CommentLikeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity()]
-class ArticleLike
+#[ORM\Entity(repositoryClass: CommentLikeRepository::class)]
+class CommentLike
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'likes')]
+    #[ORM\ManyToOne(targetEntity: Comment::class, inversedBy: 'likes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Article $article = null;
+    private ?Comment $comment = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -25,14 +26,14 @@ class ArticleLike
         return $this->id;
     }
 
-    public function getArticle(): ?Article
+    public function getComment(): ?Comment
     {
-        return $this->article;
+        return $this->comment;
     }
 
-    public function setArticle(?Article $article): self
+    public function setComment(?Comment $comment): self
     {
-        $this->article = $article;
+        $this->comment = $comment;
         return $this;
     }
 
