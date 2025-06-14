@@ -1,0 +1,32 @@
+# Symfony
+/var/
+/vendor/
+/.env.local
+.env.local.php
+.env.test
+/.phpunit.result.cache
+/public/bundles/
+/node_modules/
+/symfony.lock
+
+# Composer
+composer.lock
+
+# Node / Yarn / npm
+node_modules/
+yarn.lock
+package-lock.json
+var/
+vendor/
+
+# Logs & temp
+/log/
+/tmp/
+
+# IDEs & Editors
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
