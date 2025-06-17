@@ -12,28 +12,34 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ArticleType extends AbstractType
 {
     /**
-     * Définit les champs du formulaire Article
+     * Crée les champs du formulaire pour un article.
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title') // Champ titre de l'article
-            ->add('category', EntityType::class, [ // Sélection d'une catégorie existante
+            // Champ pour le titre de l'article
+            ->add('title')
+
+            // Champ pour choisir une catégorie (liste des catégories existantes)
+            ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'title' // Affiche le titre de la catégorie dans la liste
+                'choice_label' => 'title', // Affiche le nom de la catégorie
             ])
-            ->add('content') // Contenu de l'article
-            ->add('image') // Image associée à l'article
-        ;
+
+            // Champ pour le contenu principal
+            ->add('content')
+
+            // Champ pour l'image (URL ou chemin)
+            ->add('image');
     }
 
     /**
-     * Configure la classe liée aux données du formulaire
+     * Définit l'entité liée au formulaire.
      */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Article::class, // Formulaire lié à l'entité Article
+            'data_class' => Article::class, // Ce formulaire manipule des objets Article
         ]);
     }
 }

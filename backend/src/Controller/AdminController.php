@@ -14,13 +14,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AdminController extends AbstractController
 {
-    #[Route('/admin', name: 'app_admin')]
-    public function index(UserRepository $userRepository): Response
+    #[Route('/admin', name: 'admin_dashboard')]
+    public function dashboard(UserRepository $userRepository): Response
     {
-        // Récupérer les statistiques
+        // Statistiques utilisateurs
         $userCount = $userRepository->count([]);
         $verifiedCount = $userRepository->count(['isVerified' => true]);
-        $adminCount = $userRepository->countAdmins(); // méthode personnalisée dans UserRepository
+        $adminCount = $userRepository->countAdmins(); // méthode personnalisée
 
         return $this->render('admin/index.html.twig', [
             'userCount' => $userCount,
@@ -28,19 +28,19 @@ final class AdminController extends AbstractController
             'adminCount' => $adminCount,
         ]);
     }
+
     #[Route('/admin/users', name: 'admin_users')]
-public function manageUsers(UserRepository $userRepository): Response
-{
-    $users = $userRepository->findAll();
+    public function listUsers(UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findAll();
 
-    return $this->render('admin/users.html.twig', [
-        'users' => $users,
-    ]);
-}
-
+        return $this->render('admin/users.html.twig', [
+            'users' => $users,
+        ]);
+    }
 
     #[Route('/users/new', name: 'admin_user_new')]
-    public function newUser(
+    public function createUser(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager
@@ -50,6 +50,7 @@ public function manageUsers(UserRepository $userRepository): Response
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Hasher le mot de passe
             $user->setPassword(
                 $passwordHasher->hashPassword(
                     $user,
@@ -63,9 +64,9 @@ public function manageUsers(UserRepository $userRepository): Response
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', 'L\'utilisateur a été créé avec succès.');
+            $this->addFlash('success', 'Utilisateur créé avec succès.');
 
-            return $this->redirectToRoute('app_admin_users');
+            return $this->redirectToRoute('admin_users');
         }
 
         return $this->render('admin/user_form.html.twig', [
@@ -73,68 +74,58 @@ public function manageUsers(UserRepository $userRepository): Response
             'user' => $user,
         ]);
     }
+
     #[Route('/users/{id}/edit', name: 'admin_user_edit')]
-		public function editUser(User $user, Request $request, UserPasswordHasherInterface $passwordHasher,
-	            EntityManagerInterface $entityManager): Response
-		{
-			$form = $this->createForm(AdminUserFormType::class, $user);
-			$form->handleRequest($request);
+    public function editUser(
+        User $user,
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $form = $this->createForm(AdminUserFormType::class, $user);
+        $form->handleRequest($request);
 
-			if ($form->isSubmitted() && $form->isValid()) {
-				// Si un nouveau mot de passe est fourni, l'encoder
-				if ($plainPassword = $form->get('plainPassword')->getData()) {
-					$user->setPassword(
-						$passwordHasher->hashPassword(
-							$user,
-							$plainPassword
-						)
-					);
-				}
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Met à jour le mot de passe si fourni
+            $plainPassword = $form->get('plainPassword')->getData();
+            if ($plainPassword) {
+                $user->setPassword(
+                    $passwordHasher->hashPassword($user, $plainPassword)
+                );
+            }
 
-				$entityManager->flush();
+            $entityManager->flush();
 
-				$this->addFlash('success', 'L\'utilisateur a été modifié avec succès.');
+            $this->addFlash('success', 'Utilisateur modifié avec succès.');
 
-				return $this->redirectToRoute('admin_users');
-			}
+            return $this->redirectToRoute('admin_users');
+        }
 
-			return $this->render('admin/user_form.html.twig', [
-				'form' => $form->createView(),
-				'user' => $user,
-			]);
-		}
-
-        #[Route('/users/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]
-		public function deleteUser(User $user, Request $request, EntityManagerInterface $entityManager): Response
-		{
-			if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-				// Empêcher la suppression de son propre compte
-				if ($user === $this->getUser()) {
-					$this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
-					return $this->redirectToRoute('admin_users');
-				}
-
-				$entityManager->remove($user);
-				$entityManager->flush();
-
-				$this->addFlash('success', 'L\'utilisateur a été supprimé avec succès.');
-			}
-
-			return $this->redirectToRoute('admin_users');
-		}
-        #[Route('/admin', name: 'admin_dashboard')]
-    public function dashboard(UserRepository $userRepository): Response
-    {
-        // Récupérer les statistiques
-        $userCount = $userRepository->count([]);
-        $verifiedCount = $userRepository->count(['isVerified' => true]);
-        $adminCount = $userRepository->countAdmins(); // Méthode personnalisée supposée
-
-        return $this->render('admin/index.html.twig', [
-            'userCount' => $userCount,
-            'verifiedCount' => $verifiedCount,
-            'adminCount' => $adminCount,
+        return $this->render('admin/user_form.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
         ]);
     }
 
+    #[Route('/users/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]
+    public function deleteUser(User $user, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $token = $request->request->get('_token');
+        $validToken = $this->isCsrfTokenValid('delete' . $user->getId(), $token);
+
+        if ($validToken) {
+            // Empêche de supprimer son propre compte
+            if ($user === $this->getUser()) {
+                $this->addFlash('error', 'Impossible de supprimer votre propre compte.');
+                return $this->redirectToRoute('admin_users');
+            }
+
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+        }
+
+        return $this->redirectToRoute('admin_users');
+    }
 }

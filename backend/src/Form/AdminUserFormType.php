@@ -21,6 +21,12 @@ use Symfony\Component\Validator\Constraints\{
 
 class AdminUserFormType extends AbstractType
 {
+    /**
+     * Configure les champs du formulaire utilisateur admin.
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -47,12 +53,8 @@ class AdminUserFormType extends AbstractType
                     'placeholder' => 'exemple@domaine.com',
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez entrer une adresse email',
-                    ]),
-                    new Email([
-                        'message' => 'L\'adresse email n\'est pas valide',
-                    ]),
+                    new NotBlank(['message' => 'Veuillez entrer une adresse email']),
+                    new Email(['message' => 'L\'adresse email n\'est pas valide']),
                 ],
             ])
             ->add('roles', ChoiceType::class, [
@@ -64,22 +66,14 @@ class AdminUserFormType extends AbstractType
                 ],
                 'multiple' => true,
                 'expanded' => true,
-                'attr' => [
-                    'class' => 'form-check-input',
-                ],
-                'label_attr' => [
-                    'class' => 'form-check-label',
-                ],
+                'attr' => ['class' => 'form-check-input'],
+                'label_attr' => ['class' => 'form-check-label'],
             ])
             ->add('isVerified', CheckboxType::class, [
                 'label' => 'Email vérifié',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-check-input',
-                ],
-                'label_attr' => [
-                    'class' => 'form-check-label',
-                ],
+                'attr' => ['class' => 'form-check-input'],
+                'label_attr' => ['class' => 'form-check-label'],
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Mot de passe',
@@ -88,14 +82,12 @@ class AdminUserFormType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'autocomplete' => 'new-password',
-                    'placeholder' => $options['is_new_user'] 
-                        ? 'Mot de passe' 
+                    'placeholder' => $options['is_new_user']
+                        ? 'Mot de passe'
                         : 'Laisser vide pour ne pas modifier',
                 ],
                 'constraints' => $options['is_new_user'] ? [
-                    new NotBlank([
-                        'message' => 'Veuillez entrer un mot de passe',
-                    ]),
+                    new NotBlank(['message' => 'Veuillez entrer un mot de passe']),
                     new Length([
                         'min' => 8,
                         'minMessage' => 'Votre mot de passe doit comporter au moins {{ limit }} caractères',
@@ -105,11 +97,16 @@ class AdminUserFormType extends AbstractType
             ]);
     }
 
+    /**
+     * Définit les options par défaut du formulaire.
+     *
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'is_new_user' => false,
+            'is_new_user' => false, // Indique si le formulaire est pour un nouvel utilisateur
         ]);
     }
 }

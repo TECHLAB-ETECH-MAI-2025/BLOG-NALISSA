@@ -2,61 +2,59 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use App\Form\UserTypeForm;
 use App\Entity\User;
-use Symfony\Component\HttpFoundation\Request;
+use App\Form\UserTypeForm;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
 
 final class SecurityController extends AbstractController
 {
+    /**
+     * Gère l'inscription d'un nouvel utilisateur.
+     */
     #[Route('/inscription', name: 'security_registration')]
-    public function registration(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $encoder): Response
-    {    
+    public function registration(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
+        $user = new User();
+        $form = $this->createForm(UserTypeForm::class, $user);
+        $form->handleRequest($request);
 
-       $user = new User();
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Hash le mot de passe avant sauvegarde
+            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($hashedPassword);
 
-       $form = $this->createForm(UserTypeForm::class, $user);
-       $form->handleRequest($request);
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-       if($form->isSubmitted() && $form->isValid()){
-        $hash = $encoder->hashPassword($user, $user->getPassword());
-        
-        $user->setPassword($hash);
-        
-        $manager->persist($user);
-        $manager->flush();
-
-        return $this->redirectToRoute('security_login');
-       }
-
-
-
-
+            // Redirige vers la page de connexion après inscription
+            return $this->redirectToRoute('security_login');
+        }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
-
         ]);
     }
-     
+
+    /**
+     * Affiche le formulaire de connexion et gère les erreurs.
+     */
     #[Route('/connexion', name: 'security_login')]
+    public function login(AuthenticationUtils $authenticationUtils): Response
+    {
+        // Récupère la dernière erreur de connexion
+        $error = $authenticationUtils->getLastAuthenticationError();
 
-    public function login(AuthenticationUtils $authenticationUtils){
-             $error = $authenticationUtils->getLastAuthenticationError();
-         
-     return $this->render('security/login.html.twig', [
-        'error' => $error,
-     ]);
-
-        
+        return $this->render('security/login.html.twig', [
+            'error' => $error,
+        ]);
     }
-
-
- 
 }

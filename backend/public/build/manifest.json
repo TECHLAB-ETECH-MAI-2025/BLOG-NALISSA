@@ -9,7 +9,5 @@
   "build/vendors-node_modules_datatables_net-bs5_css_dataTables_bootstrap5_min_css-node_modules_datata-10a5c4.css": "/build/vendors-node_modules_datatables_net-bs5_css_dataTables_bootstrap5_min_css-node_modules_datata-10a5c4.css",
   "build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-9d8eef.js": "/build/vendors-node_modules_core-js_modules_es_array_for-each_js-node_modules_core-js_modules_es_arr-9d8eef.js",
   "build/vendors-node_modules_hotwired_stimulus_dist_stimulus_js-node_modules_bootstrap_dist_js_bootst-265d23.js": "/build/vendors-node_modules_hotwired_stimulus_dist_stimulus_js-node_modules_bootstrap_dist_js_bootst-265d23.js",
-  "build/assets_styles_app_scss.css": "/build/assets_styles_app_scss.css",
-  "build/vendors-node_modules_bootstrap_dist_js_bootstrap_esm_js-node_modules_core-js_modules_es_array-a28c04.js": "/build/vendors-node_modules_bootstrap_dist_js_bootstrap_esm_js-node_modules_core-js_modules_es_array-a28c04.js",
-  "build/vendors-node_modules_hotwired_stimulus_dist_stimulus_js-node_modules_bootstrap_dist_js_bootst-3b4e4d.js": "/build/vendors-node_modules_hotwired_stimulus_dist_stimulus_js-node_modules_bootstrap_dist_js_bootst-3b4e4d.js"
+  "build/assets_styles_app_scss.css": "/build/assets_styles_app_scss.css"
 }

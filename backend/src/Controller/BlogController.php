@@ -1,170 +1,158 @@
-<?php 
+<?php
 
 namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Comment;
-use App\Entity\Category;
-use \DateTime;
-use \DateTimeImmutable;
-
-
 use App\Form\ArticleType;
-use App\Repository\CommentRepository;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
 use App\Form\CommentType;
 use App\Repository\ArticleRepository;
+use App\Repository\CommentRepository;
+use DateTime;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Knp\Component\Pager\PaginatorInterface;
 
 final class BlogController extends AbstractController
 {
-    // Route principale du blog avec pagination
     #[Route('/blog', name: 'blog')]
-    public function index(ArticleRepository $repo, Request $request, PaginatorInterface $paginator): Response
-    {
-        // Prépare une requête pour récupérer les articles triés par date
+    public function index(
+        ArticleRepository $repo,
+        Request $request,
+        PaginatorInterface $paginator
+    ): Response {
+        // Récupère les articles triés par date descendante
         $query = $repo->createQueryBuilder('a')
                       ->orderBy('a.createdAt', 'DESC')
                       ->getQuery();
 
-        // la pagination (5 articles par page)
+        // Paginer les résultats (5 par page)
         $articles = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
             5
         );
 
-        // Affiche la liste des articles
         return $this->render('blog/index.html.twig', [
-            'controller_name' => 'BlogController',
             'articles' => $articles,
         ]);
     }
 
-    // Route de la page d'accueil
     #[Route('/', name: 'home')]
     public function home(): Response
     {
         return $this->render('home/index.html.twig');
     }
 
-    // Route pour créer ou modifier un article
     #[Route('/blog/new', name: 'blog_create')]
     #[Route('/blog/{id}/edit', name: 'blog_edit')]
-    public function create(?Article $article = null, Request $request, EntityManagerInterface $manager): Response
-    {
-        // Crée un nouvel article si aucun n'est fourni
+    public function createOrEditArticle(
+        ?Article $article,
+        Request $request,
+        EntityManagerInterface $manager
+    ): Response {
+        // Crée un article si c’est une création
         if (!$article) {
             $article = new Article();
         }
 
-
-        // Crée le formulaire lié à l'article
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
-        // Si le formulaire est soumis et valide
+        // Enregistre l'article si le formulaire est valide
         if ($form->isSubmitted() && $form->isValid()) {
-
-            // Ajoute la date de création si c'est un nouvel article
             if (!$article->getId()) {
                 $article->setCreatedAt(new DateTimeImmutable())
                         ->setAuthor($this->getUser());
             }
 
-            // Enregistre l'article
             $manager->persist($article);
             $manager->flush();
 
-            // Redirige vers l'affichage de l'article
             return $this->redirectToRoute('blog_show', ['id' => $article->getId()]);
         }
 
-        // Affiche le formulaire (mode création ou édition)
         return $this->render('blog/create.html.twig', [
             'formArticle' => $form->createView(),
             'editMode' => $article->getId() !== null,
         ]);
     }
 
-    // Route pour afficher un article et ses commentaires
     #[Route('/blog/{id}', name: 'blog_show', methods: ['GET', 'POST'])]
-    public function show(Article $article, Request $request, EntityManagerInterface $manager, Security $security): Response
-    {
-        // Prépare un nouveau commentaire
+    public function showArticle(
+        Article $article,
+        Request $request,
+        EntityManagerInterface $manager,
+        Security $security
+    ): Response {
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
-        
-        // Si le formulaire est soumis et valide
+
+        // Ajoute un commentaire s'il est soumis et valide
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setCreatedAt(new DateTime())
                     ->setArticle($article)
                     ->setAuthor($security->getUser());
 
-            // Enregistre le commentaire
             $manager->persist($comment);
             $manager->flush();
 
-            // Message de succès + redirection
             $this->addFlash('success', 'Commentaire ajouté avec succès.');
             return $this->redirectToRoute('blog_show', ['id' => $article->getId()]);
         }
 
-        // Affiche l'article et le formulaire de commentaire
         return $this->render('blog/show.html.twig', [
             'article' => $article,
-            'comment' => $comment,
             'formArticle' => $form->createView(),
             'formComment' => $form->createView(),
             'editMode' => $article->getId() !== null,
         ]);
     }
 
-
     #[Route('/like/{type}/{id}', name: 'like', methods: ['POST'])]
-    public function like(
+    public function likeContent(
         string $type,
         int $id,
         ArticleRepository $articleRepo,
         CommentRepository $commentRepo,
         EntityManagerInterface $em
     ): JsonResponse {
-        if ($type === 'article') {
-            $entity = $articleRepo->find($id);
-        } elseif ($type === 'comment') {
-            $entity = $commentRepo->find($id);
-        } else {
-            return new JsonResponse(['error' => 'Type inconnu'], 400);
-        }
+        // Détermine le type d’entité à liker
+        $entity = match ($type) {
+            'article' => $articleRepo->find($id),
+            'comment' => $commentRepo->find($id),
+            default => null
+        };
 
         if (!$entity) {
-            return new JsonResponse(['error' => 'Non trouvé'], 404);
+            return new JsonResponse(['error' => 'Type ou élément non trouvé'], 404);
         }
 
+        // Incrémente les likes et enregistre
         $entity->incrementLikes();
         $em->flush();
 
         return new JsonResponse(['likesCount' => $entity->getLikes()]);
     }
 
-
-
-
-    // Route pour supprimer un article
     #[Route('/blog/{id}/delete', name: 'blog_delete', methods: ['POST'])]
-    public function delete(Request $request, Article $article, EntityManagerInterface $manager): RedirectResponse
-    {
-        // Vérifie la validité du token CSRF
-        if ($this->isCsrfTokenValid('delete-article'.$article->getId(), $request->request->get('_token'))) {
+    public function deleteArticle(
+        Request $request,
+        Article $article,
+        EntityManagerInterface $manager
+    ): RedirectResponse {
+        // Vérifie le token CSRF avant suppression
+        $token = $request->request->get('_token');
+
+        if ($this->isCsrfTokenValid('delete-article' . $article->getId(), $token)) {
             $manager->remove($article);
             $manager->flush();
 
@@ -176,12 +164,16 @@ final class BlogController extends AbstractController
         return $this->redirectToRoute('blog');
     }
 
-    // Route pour supprimer un commentaire
     #[Route('/{id}/delete', name: 'app_comment_delete', methods: ['POST'])]
-    public function deleteComment(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
-    {
-        // Vérifie la validité du token CSRF
-        if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->getPayload()->getString('_token'))) {
+    public function deleteComment(
+        Request $request,
+        Comment $comment,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Vérifie le token CSRF avant suppression
+        $token = $request->getPayload()->getString('_token');
+
+        if ($this->isCsrfTokenValid('delete' . $comment->getId(), $token)) {
             $entityManager->remove($comment);
             $entityManager->flush();
 
@@ -190,6 +182,8 @@ final class BlogController extends AbstractController
             $this->addFlash('error', 'Token CSRF invalide, suppression annulée.');
         }
 
-        return $this->redirectToRoute('blog/show.html.twig', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('blog_show', [
+            'id' => $comment->getArticle()->getId(),
+        ], Response::HTTP_SEE_OTHER);
     }
 }

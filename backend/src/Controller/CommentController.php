@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Controller;
 
@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/comment')]
 final class CommentController extends AbstractController
@@ -19,79 +19,88 @@ final class CommentController extends AbstractController
     #[Route(name: 'app_comment_index', methods: ['GET'])]
     public function index(CommentRepository $commentRepository): Response
     {
-        // Affiche la liste de tous les commentaires
+        // Liste tous les commentaires
         return $this->render('comment/index.html.twig', [
             'comments' => $commentRepository->findAll(),
         ]);
     }
 
-    #[Route('/{id}', name: 'app_comment_show', methods: ['GET', 'POST'])]
+    #[Route('/{id}', name: 'app_comment_show', methods: ['GET'])]
     public function show(Comment $comment): Response
     {
-        // Affiche le détail d'un commentaire
+        // Affiche un commentaire
         return $this->render('comment/show.html.twig', [
             'comment' => $comment,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_comment_edit')]
-    public function create(?Comment $comment = null, Article $article,Request $request, EntityManagerInterface $manager, CommentRepository $commentRepository): Response
-    {
-        // Crée un nouveau commentaire s'il n'existe pas
+    #[Route('/{id}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
+    public function editOrCreate(
+        Request $request,
+        ?Comment $comment = null,
+        Article $article,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Initialise un nouveau commentaire si besoin
         if (!$comment) {
             $comment = new Comment();
         }
 
-        // Crée et gère le formulaire
+        // Formulaire
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
-        // Enregistre le commentaire si le formulaire est valide
+        // Traitement du formulaire
         if ($form->isSubmitted() && $form->isValid()) {
+            // Ajout de la date si nouveau commentaire
             if (!$comment->getId()) {
                 $comment->setCreatedAt(new \DateTime());
             }
+
+            // Définir l'auteur
             $user = $this->getUser();
-             if ($user) {
-                $comment->setAuthor($user); // ou getEmail(), selon ton entité User
-            } else {
-                throw new \Exception('Utilisateur non connecté');
+            if (!$user instanceof UserInterface) {
+                throw new \Exception('Utilisateur non connecté.');
             }
+
+            $comment->setAuthor($user);
             $comment->setContent($request->request->get('content'));
             $comment->setArticle($article);
-            $commentRepository->save($comment, true);
+
+            // Enregistrement
+            $entityManager->persist($comment);
+            $entityManager->flush();
 
             $this->addFlash('success', 'Commentaire ajouté avec succès.');
-             $manager->persist($comment);
-             $manager->flush();
 
-            // Redirige vers l’article lié au commentaire
-            return $this->redirectToRoute('blog_show', ['id' => $comment->getArticle()->getId()]);
+            return $this->redirectToRoute('blog_show', ['id' => $article->getId()]);
         }
 
-        // Affiche le formulaire avec les données existantes
+        // Affiche le formulaire
         return $this->render('blog/show.html.twig', [
             'formComment' => $form->createView(),
             'editMode' => $comment->getId() !== null,
-            'article' => $comment->getArticle(),
+            'article' => $article,
         ]);
     }
 
-    #[Route('/comment/{id}/delete', name: 'app_comment_delete', methods: ['POST'])]
-    public function delete(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
-    {
+    #[Route('/{id}/delete', name: 'app_comment_delete', methods: ['POST'])]
+    public function delete(
+        Request $request,
+        Comment $comment,
+        EntityManagerInterface $entityManager
+    ): Response {
         $article = $comment->getArticle();
 
-        // Vérifie le token CSRF avant suppression
+        // Vérifie le CSRF token
         if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($comment);
             $entityManager->flush();
             $this->addFlash('success', 'Commentaire supprimé avec succès.');
         } else {
-            $this->addFlash('error', 'Token CSRF invalide, suppression annulée.');
+            $this->addFlash('error', 'Token CSRF invalide.');
         }
 
-        // Redirige vers l'article d'origine
         return $this->redirectToRoute('blog_show', ['id' => $article->getId()]);
     }
 }
